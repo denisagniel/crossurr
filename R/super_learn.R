@@ -10,11 +10,15 @@ super_learn <- function(x = NULL,
                                      "SL.svm",
                                      "SL.ridge"),
                         ...) {
+  if (!inherits(yname, 'quosure')) {
+    yn <- enquo(yname)
+  } else yn <- yname
+
   if (!is.null(data)) {
     x <- data %>%
-      select(vars(xvars))
+      select(all_of(xvars))
     y <- data %>%
-      pull(yname)
+      pull(!!yn)
   }
   SuperLearner::SuperLearner(Y = y,
                              X = x,
