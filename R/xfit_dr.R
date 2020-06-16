@@ -42,5 +42,6 @@ xfit_dr <- function(ds,
              (1-a)*(y-mu0)/(1-pi))
   out_ds %>%
     summarise(estimate = mean(u_i),
-           se = sd(u_i))
+           # sigmasq = mean(u_i^2),
+           se = sqrt(mean(u_i^2))/sqrt(n))
 }
