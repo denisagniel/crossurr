@@ -12,6 +12,7 @@ xfit_sl <- function(ds,
                           seed = rnorm(1),
                         case_only = FALSE,
                         control_only = FALSE,
+                    both_arms = FALSE,
                         aname = NULL,
                         ...) {
   if (!inherits(yname, 'quosure')) {
@@ -46,8 +47,19 @@ xfit_sl <- function(ds,
                            train_data = train_ds,
                            test_data = test_ds,
                            ...)
-    test_ds %>%
-      mutate(!!out_name := slf$SL.predict)
+    if (both_arms) {
+      out_name1 <- glue('{out_name}1')
+      out_name0 <- glue('{out_name}0')
+      test_ds %>%
+        mutate(!!out_name1 := predict(slf, newdata = test_ds %>%
+                                        mutate(!!(an) == 1))$pred[,1],
+               !!out_name0 := predict(slf, newdata = test_ds %>%
+                                        mutate(!!(an) == 0))$pred[,1],)
+    } else {
+      test_ds %>%
+        mutate(!!out_name := slf$SL.predict)
+    }
+
   })
   test_l %>%
     bind_rows
