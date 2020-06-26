@@ -76,5 +76,6 @@ xfit_dr <- function(ds,
   out_ds %>%
     summarise(estimate = mean(u_i),
            # sigmasq = mean(u_i^2),
-           se = sqrt(mean(u_i^2))/sqrt(nrow(out_ds)))
+           se = sqrt(mean(u_i^2))/sqrt(nrow(out_ds)),
+           observation_data = list(out_ds))
 }
