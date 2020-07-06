@@ -21,7 +21,8 @@ xfit_dr <- function(ds,
                    control_only = TRUE,
                    aname = an,
                    family = outcome_family,
-                   ...)
+                   ...) %>%
+      select(-fold)
     mu1 <- xfit_sl(ds = ds,
                    xvars = xvars,
                    yname = yn,
@@ -31,7 +32,8 @@ xfit_dr <- function(ds,
                    case_only = TRUE,
                    aname = an,
                    family = outcome_family,
-                   ...)
+                   ...) %>%
+      select(-fold)
   } else {
     mu <- xfit_sl(ds = ds,
                   xvars = c(xvars, aname),
@@ -42,7 +44,8 @@ xfit_dr <- function(ds,
                   both_arms = TRUE,
                   aname = an,
                   family = outcome_family,
-                  ...)
+                  ...) %>%
+      select(-fold)
   }
 
   ps <- xfit_sl(ds = ds,
@@ -51,7 +54,8 @@ xfit_dr <- function(ds,
                 K = K,
                     out_name = 'pi',
                     learners = ps_learners,
-                    family = binomial(), ...)
+                    family = binomial(), ...) %>%
+    select(-fold)
   if (trim_at != 0) {
     ps <- ps %>%
       mutate(pi = case_when(pi < trim_at ~ trim_at,
