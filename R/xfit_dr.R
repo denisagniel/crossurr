@@ -8,11 +8,13 @@ xfit_dr <- function(ds,
                     interaction_model = TRUE,
                     trim_at = 0.05,
                     outcome_family = gaussian(),
+                    method = 'superlearner',
                     ...) {
   yn <- enquo(yname)
   an <- enquo(aname)
   if (interaction_model) {
-    mu0 <- xfit_sl(ds = ds,
+    if (method == 'superlearner') {
+      mu0 <- xfit_sl(ds = ds,
                    xvars = xvars,
                    yname = yn,
                    K = K,
@@ -34,28 +36,75 @@ xfit_dr <- function(ds,
                    family = outcome_family,
                    ...) %>%
       select(-fold)
+    } else if (method == 'lasso') {
+      mu0 <- xfit_lasso(ds = ds,
+                     xvars = xvars,
+                     yname = yn,
+                     K = K,
+                     out_name = 'mu0',
+                     control_only = TRUE,
+                     aname = an,
+                     family = outcome_family,
+                     ...) %>%
+        select(-fold)
+      mu1 <- xfit_lasso(ds = ds,
+                     xvars = xvars,
+                     yname = yn,
+                     K = K,
+                     out_name = 'mu1',
+                     case_only = TRUE,
+                     aname = an,
+                     family = outcome_family,
+                     ...) %>%
+        select(-fold)
+    } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
   } else {
-    mu <- xfit_sl(ds = ds,
-                  xvars = c(xvars, aname),
-                  yname = yn,
-                  K = K,
-                  out_name = 'mu',
-                  learners = outcome_learners,
-                  both_arms = TRUE,
-                  aname = an,
-                  family = outcome_family,
-                  ...) %>%
-      select(-fold)
-  }
+    if (method == 'superlearner') {
+      mu <- xfit_sl(ds = ds,
+                    xvars = c(xvars, rlang::as_name(an)),
+                    yname = yn,
+                    K = K,
+                    out_name = 'mu',
+                    learners = outcome_learners,
+                    both_arms = TRUE,
+                    aname = an,
+                    family = outcome_family,
+                    ...) %>%
+        select(-fold)
+    } else if (method == 'lasso') {
+      mu <- xfit_lasso(ds = ds,
+                    xvars = c(xvars, rlang::as_name(an)),
+                    yname = yn,
+                    K = K,
+                    out_name = 'mu',
+                    both_arms = TRUE,
+                    aname = an,
+                    family = outcome_family,
+                    ...) %>%
+        select(-fold)
+    } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
 
-  ps <- xfit_sl(ds = ds,
-                    xvars = xvars,
-                    yname = an,
-                K = K,
-                    out_name = 'pi',
-                    learners = ps_learners,
-                    family = binomial(), ...) %>%
-    select(-fold)
+  }
+  if (method == 'superlearner') {
+    ps <- xfit_sl(ds = ds,
+                  xvars = xvars,
+                  yname = an,
+                  K = K,
+                  out_name = 'pi',
+                  learners = ps_learners,
+                  family = binomial(), ...) %>%
+      select(-fold)
+  } else if (method == 'lasso') {
+    ps <- xfit_lasso(ds = ds,
+                  xvars = xvars,
+                  yname = an,
+                  K = K,
+                  out_name = 'pi',
+                  learners = ps_learners,
+                  family = binomial(), ...) %>%
+      select(-fold)
+  } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
+
   if (trim_at != 0) {
     ps <- ps %>%
       mutate(pi = case_when(pi < trim_at ~ trim_at,
