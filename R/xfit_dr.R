@@ -8,12 +8,12 @@ xfit_dr <- function(ds,
                     interaction_model = TRUE,
                     trim_at = 0.05,
                     outcome_family = gaussian(),
-                    method = 'superlearner',
+                    mthd = 'superlearner',
                     ...) {
   yn <- enquo(yname)
   an <- enquo(aname)
   if (interaction_model) {
-    if (method == 'superlearner') {
+    if (mthd == 'superlearner') {
       mu0 <- xfit_sl(ds = ds,
                    xvars = xvars,
                    yname = yn,
@@ -36,7 +36,7 @@ xfit_dr <- function(ds,
                    family = outcome_family,
                    ...) %>%
       select(-fold)
-    } else if (method == 'lasso') {
+    } else if (mthd == 'lasso') {
       mu0 <- xfit_lasso(ds = ds,
                      xvars = xvars,
                      yname = yn,
@@ -59,7 +59,7 @@ xfit_dr <- function(ds,
         select(-fold)
     } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
   } else {
-    if (method == 'superlearner') {
+    if (mthd == 'superlearner') {
       mu <- xfit_sl(ds = ds,
                     xvars = c(xvars, rlang::as_name(an)),
                     yname = yn,
@@ -71,7 +71,7 @@ xfit_dr <- function(ds,
                     family = outcome_family,
                     ...) %>%
         select(-fold)
-    } else if (method == 'lasso') {
+    } else if (mthd == 'lasso') {
       mu <- xfit_lasso(ds = ds,
                     xvars = c(xvars, rlang::as_name(an)),
                     yname = yn,
@@ -85,7 +85,7 @@ xfit_dr <- function(ds,
     } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
 
   }
-  if (method == 'superlearner') {
+  if (mthd == 'superlearner') {
     ps <- xfit_sl(ds = ds,
                   xvars = xvars,
                   yname = an,
@@ -94,7 +94,7 @@ xfit_dr <- function(ds,
                   learners = ps_learners,
                   family = binomial(), ...) %>%
       select(-fold)
-  } else if (method == 'lasso') {
+  } else if (mthd == 'lasso') {
     ps <- xfit_lasso(ds = ds,
                   xvars = xvars,
                   yname = an,
