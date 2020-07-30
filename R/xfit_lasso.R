@@ -18,7 +18,7 @@ xfit_lasso <- function(ds,
   } else an <- aname
   set.seed(seed)
   n <- nrow(ds)
-  foldn <- rep(1:K, n/K)[1:n]
+  foldn <- rep(1:K, ceiling(n/K))[1:n]
   dsf <- ds %>%
     mutate(fold = sample(foldn))
   test_l <- map(1:K, function(i) {
