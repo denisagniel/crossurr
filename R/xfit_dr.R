@@ -116,19 +116,29 @@ xfit_dr <- function(ds,
       inner_join(ps) %>%
       mutate(u_i = mu1 - mu0 +
                (!!an)*((!!yn) - mu1)/pi -
-               (1-(!!an))*((!!yn)-mu0)/(1-pi))
+               (1-(!!an))*((!!yn)-mu0)/(1-pi),
+             u_i1 = mu1 + (!!an)*((!!yn) - mu1)/pi,
+             u_i0 = mu_0 + (1-(!!an))*((!!yn)-mu0)/(1-pi))
   } else {
     out_ds <- mu0 %>%
       inner_join(mu1) %>%
       inner_join(ps) %>%
       mutate(u_i = mu1 - mu0 +
                (!!an)*((!!yn) - mu1)/pi -
-               (1-(!!an))*((!!yn)-mu0)/(1-pi))
+               (1-(!!an))*((!!yn)-mu0)/(1-pi),
+             u_i1 = mu1 + (!!an)*((!!yn) - mu1)/pi,
+             u_i0 = mu0 + (1-(!!an))*((!!yn)-mu0)/(1-pi))
   }
 
   out_ds %>%
     summarise(estimate = mean(u_i),
+              E_Y1 = mean(u_i1),
+              E_Y0 = mean(u_i0),
            # sigmasq = mean(u_i^2),
            se = sqrt(mean(u_i^2))/sqrt(nrow(out_ds)),
-           observation_data = list(out_ds))
+           observation_data = list(out_ds %>%
+                                     select(u_i,
+                                            mu1,
+                                            mu0,
+                                            pi)))
 }
