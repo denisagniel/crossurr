@@ -44,7 +44,7 @@ xfit_dr <- function(ds,
                      out_name = 'mu0',
                      control_only = TRUE,
                      aname = an,
-                     family = outcome_family,
+                     family = as.character(outcome_family)[1],
                      ...) %>%
         select(-fold)
       mu1 <- xfit_lasso(ds = ds,
@@ -54,7 +54,7 @@ xfit_dr <- function(ds,
                      out_name = 'mu1',
                      case_only = TRUE,
                      aname = an,
-                     family = outcome_family,
+                     family = as.character(outcome_family)[1],
                      ...) %>%
         select(-fold)
     } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
@@ -79,7 +79,7 @@ xfit_dr <- function(ds,
                     out_name = 'mu',
                     both_arms = TRUE,
                     aname = an,
-                    family = outcome_family,
+                    family = as.character(outcome_family)[1],
                     ...) %>%
         select(-fold)
     } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
@@ -101,7 +101,7 @@ xfit_dr <- function(ds,
                   K = K,
                   out_name = 'pi',
                   learners = ps_learners,
-                  family = binomial(), ...) %>%
+                  family = 'binomial', ...) %>%
       select(-fold)
   } else stop('currently only methods "lasso" and "superlearner" are supported. please select one of those.')
 
