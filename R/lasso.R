@@ -17,7 +17,7 @@ lasso <- function(x = NULL,
     y <- data %>%
       pull(!!yn)
   }
-  lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax)
+  lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, ...)
   if (!is.null(newX)) {
     yhat <- predict(lfit, newx = newX, type = 'response', s = 'lambda.min')
     lfit$yhat <- yhat
