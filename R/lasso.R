@@ -5,19 +5,25 @@ lasso <- function(x = NULL,
                         data = NULL,
                   newX = NULL,
                   relax = TRUE,
+                  ps_fit = FALSE,
                         ...) {
-  if (!inherits(yname, 'quosure')) {
-    yn <- enquo(yname)
-  } else yn <- yname
+  # if (!inherits(yname, 'quosure')) {
+  #   yn <- enquo(yname)
+  # } else yn <- yname
 
   if (!is.null(data)) {
     x <- data %>%
-      select(all_of(xvars)) %>%
+      select(all_of(x)) %>%
       as.matrix
     y <- data %>%
-      pull(!!yn)
+      pull(!!sym(y))
   }
-  lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, ...)
+  if (ps_fit) {
+    lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, familiy = 'binomial', ...)
+  } else {
+    lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, ...)
+  }
+
   if (!is.null(newX)) {
     yhat <- predict(lfit, newx = newX, type = 'response', s = 'lambda.min')
     lfit$yhat <- yhat
