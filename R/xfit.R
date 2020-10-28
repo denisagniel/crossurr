@@ -12,7 +12,7 @@ xfit <- function(ds,
                  outcome_family = gaussian(),
                  # both_arms = FALSE,
                     ...) {
-  if (outcome_family == binomial()) {
+  if (outcome_family$family == 'binomial') {
     ps_fit <- TRUE
   }
   set.seed(seed)
