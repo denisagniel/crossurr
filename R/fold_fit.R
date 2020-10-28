@@ -3,11 +3,11 @@ fold_fit <- function(
   y = NULL,
   train_data = NULL,
   test_data = NULL,
-  method = c('superlearner', 'lasso', 'ols', 'logistic'),
+  mthd = c('superlearner', 'lasso', 'ols', 'logistic'),
   ps_fit = FALSE,
   ...) {
 
-  if (method == 'superlearner') {
+  if (mthd == 'superlearner') {
     test_x <- test_data %>%
       select(all_of(x))
     fit <- super_learn(
@@ -17,7 +17,7 @@ fold_fit <- function(
       newX = test_x,
       ps_fit = ps_fit,
       ...)
-  } else if (method == 'lasso') {
+  } else if (mthd == 'lasso') {
     test_x <- test_data %>%
       select(all_of(x)) %>%
       as.matrix
@@ -30,13 +30,13 @@ fold_fit <- function(
       ps_fit = ps_fit,
       # family = NULL,
       ...)
-  } else if (method == 'ols') {
+  } else if (mthd == 'ols') {
     fit <- ols(x = x,
                y = y,
                data = train_data,
                test_data = test_data,
                ...)
-  } else if (method == 'logistic') {
+  } else if (mthd == 'logistic') {
     fit <- logistic(x = x,
                y = y,
                data = train_data,
