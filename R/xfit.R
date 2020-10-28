@@ -7,10 +7,14 @@ xfit <- function(ds,
                  seed = rnorm(1),
                  case_only = FALSE,
                  control_only = FALSE,
-                 method = c('superlearner', 'lasso', 'parametric'),
+                 mthd = c('superlearner', 'lasso', 'parametric'),
                  ps_fit = FALSE,
+                 outcome_family = gaussian(),
                  # both_arms = FALSE,
                     ...) {
+  if (outcome_family == binomial()) {
+    ps_fit <- TRUE
+  }
   set.seed(seed)
   n <- nrow(ds)
   foldn <- rep(1:K, ceiling(n/K))[1:n]
@@ -35,7 +39,7 @@ xfit <- function(ds,
                          y = y,
                          train_data = train_ds,
                          test_data = test_ds,
-                         method = method,
+                         mthd = mthd,
                          ps_fit = ps_fit,
                          ...)
       test_ds %>%

@@ -25,7 +25,8 @@ xfit_dr <- function(ds,
                 K = K,
                 control_only = TRUE,
                 mthd = out_mthd,
-                learners = outcome_learners) %>%
+                outcome_family = outcome_family,
+                learners = outcome_learners, ...) %>%
       select(-fold)
     mu1 <- xfit(ds = ds,
                 x = x,
@@ -35,7 +36,8 @@ xfit_dr <- function(ds,
                 K = K,
                 case_only = TRUE,
                 mthd = out_mthd,
-                learners = outcome_learners)%>%
+                outcome_family = outcome_family,
+                learners = outcome_learners, ...)%>%
       select(-fold)
   } else {
     mu <- xfit(ds = ds,
@@ -45,7 +47,8 @@ xfit_dr <- function(ds,
                out_name = 'mu',
                K = K,
                mthd = out_mthd,
-               learners = outcome_learners)%>%
+               outcome_family = outcome_family,
+               learners = outcome_learners, ...)%>%
       select(-fold)
   }
     ps <- xfit(ds = ds,
@@ -56,6 +59,7 @@ xfit_dr <- function(ds,
                   out_name = 'pi',
                   learners = ps_learners,
                ps_fit = TRUE,
+               outcome_family = outcome_family,
                ...) %>%
     select(-fold)
 
