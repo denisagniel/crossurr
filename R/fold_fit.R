@@ -28,7 +28,7 @@ fold_fit <- function(
       newX = test_x,
       learners = learners,
       ps_fit = ps_fit,
-      family = NULL,
+      # family = NULL,
       ...)
   } else if (method == 'ols') {
     fit <- ols(x = x,
