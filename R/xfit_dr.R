@@ -67,32 +67,39 @@ xfit_dr <- function(ds,
   }
   if (!interaction_model) {
     out_ds <- mu %>%
-      inner_join(ps) %>%
-      mutate(u_i = mu1 - mu0 +
-               (!!sym(a))*((!!sym(y)) - mu1)/pi -
-               (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi),
-             u_i1 = mu1 + (!!sym(a))*((!!sym(y)) - mu1)/pi,
-             u_i0 = mu_0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi))
+      inner_join(ps)
   } else {
     out_ds <- mu0 %>%
       inner_join(mu1) %>%
-      inner_join(ps) %>%
+      inner_join(ps)
+  }
+    out_ds <- out_ds %>%
       mutate(u_i = mu1 - mu0 +
                (!!sym(a))*((!!sym(y)) - mu1)/pi -
                (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi),
              u_i1 = mu1 + (!!sym(a))*((!!sym(y)) - mu1)/pi,
-             u_i0 = mu0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi))
-  }
-
+             u_i0 = mu0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi),
+             om_u_i = mu1 - mu0,
+             ipw_u_i = (!!sym(a))*(!!sym(y))/pi -
+               (1-(!!sym(a)))*(!!sym(y))/(1-pi))
+  n <- nrow(out_ds)
   out_ds %>%
     summarise(estimate = mean(u_i),
               E_Y1 = mean(u_i1),
               E_Y0 = mean(u_i0),
            # sigmasq = mean(u_i^2),
-           se = sqrt(mean(u_i^2))/sqrt(nrow(out_ds)),
+           se = sqrt(mean(u_i^2))/sqrt(n),
+           om_est = mean(om_u_i),
+           om_se = sqrt(mean(om_u_i^2)/n),
+           ipw_est = mean(ipw_u_i),
+           ipw_se = sqrt(mean(ipw_u_i^2)/n),
+           risk_ratio = E_Y1/E_Y0,
+           rr_se = sqrt(mean(u_i1^2/E_Y0^2 + E_Y1^2/E_Y0^4*u_i0^2 - 2*E_Y1/E_Y0^3*u_i1*u_i0)/n),
            observation_data = list(out_ds %>%
                                      select(u_i,
                                             mu1,
                                             mu0,
-                                            pi)))
+                                            pi,
+                                            a,
+                                            y)))
 }
