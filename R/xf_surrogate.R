@@ -44,7 +44,8 @@ xf_surrogate <- function(ds,
   deltahat_s <- delta_s_fit$estimate
 
   if (n_ptb > 0) {
-    g_ptb <- map(1:n_ptb, function(i) rexp(n))
+    g_ptb <- map(1:n_ptb, function(i) sqrt(12)*rbeta(n, shape1 = 1,
+                                                     shape2 = 1) - sqrt(12)/2 + 1)
     ptb_ds <- map(g_ptb, function(g) {
       deltahat_g <- mean(u1*g)
       deltahat_sg <- mean(u2*g)
