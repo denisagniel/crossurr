@@ -68,8 +68,12 @@ xf_surrogate <- function(ds,
     R_se = sqrt(sigmasq/length(u1)),
     deltahat_s, deltahat
   )
+  ptb_ds <- ptb_ds %>% bind_rows
+
   if (n_ptb > 0) {
     out %>%
-      cbind(ptb_out)
+      cbind(ptb_out) %>%
+      as_tibble %>%
+      mutate(ptb_ds = list(ptb_ds))
   } else out
 }
