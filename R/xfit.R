@@ -22,7 +22,7 @@ xfit <- function(ds,
     mutate(fold = sample(foldn))
   test_l <- map(1:K, function(i) {
     # browser()
-    print(glue('Fitting fold {i}...'))
+    # print(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
       filter(fold != i)
     if (case_only) {
