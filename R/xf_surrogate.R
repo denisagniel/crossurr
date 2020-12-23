@@ -88,6 +88,7 @@ xf_surrogate <- function(ds,
       mutate(ptb_ds = list(ptb_ds))
   }
   sigmasq <- mean(u1^2/deltahat^2 + u2^2*deltahat_s^2/deltahat^4 - 2*u1*u2*deltahat_s/deltahat^3)
+  sigmasq_diff <- mean(u1^2 + u2^2 - 2*u1*u2)
   out <- tibble(
     R = 1 - deltahat_s/deltahat,
     R_se = sqrt(sigmasq/length(u1)),
@@ -95,6 +96,8 @@ xf_surrogate <- function(ds,
     deltahat_s_se = sqrt(mean(u2^2)/length(u2)),
     deltahat,
     deltahat_se = sqrt(mean(u1^2)/length(u1)),
+    delta_diff = deltahat - deltahat_s,
+    dd_se = sqrt(sigmasq_diff)/length(u1)
   )
   if (n_ptb > 0) {
     out %>%
