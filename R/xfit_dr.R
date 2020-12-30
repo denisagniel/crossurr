@@ -77,6 +77,7 @@ xfit_dr <- function(ds,
       inner_join(mu1) %>%
       inner_join(ps)
   }
+    #browser()
     out_ds <- out_ds %>%
       mutate(u_i = mu1 - mu0 +
                (!!sym(a))*((!!sym(y)) - mu1)/pi -

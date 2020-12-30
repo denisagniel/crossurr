@@ -19,9 +19,9 @@ lasso <- function(x = NULL,
       pull(!!sym(y))
   }
   if (ps_fit) {
-    lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, familiy = 'binomial', ...)
+    lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, grouped=FALSE, familiy = 'binomial', ...)
   } else {
-    lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, ...)
+    lfit <- glmnet::cv.glmnet(x = x, y = y, relax = relax, grouped=FALSE, ...)
   }
 
   if (!is.null(newX)) {

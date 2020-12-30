@@ -1,5 +1,21 @@
+#'
+#'@param ds a \code{data.frame}.
+#'@param x names any other covariates (eg. age, sex, etc). Default is \code{NULL}.
+#'@param s names surrogates
+#'@param y names outcome
+#'@param a treatment variable name (eg. groups). Expect a binary variable made of \code{1}s and \code{0}s.
+#'@param K number of folds for cross validation. Default is \code{5}
+#'@param outcome_learners Default is \code{NULL}
+#'@ps_learners only used for the superlearner
+#'@interaction_model TRUE
+#'@param trim_at 0.05
+#'@param outcome_family gaussian
+#'@param Default is \code{'superlearner'}
+#'@param Number of perturbations. Default is \code{0} which means asymptotics
+#'
+#'@export
 xf_surrogate <- function(ds,
-                         x,
+                         x = NULL,
                          s,
                          y,
                          a,
@@ -44,9 +60,9 @@ xf_surrogate <- function(ds,
   deltahat_s <- delta_s_fit$estimate
 
   if (n_ptb > 0) {
-    g_ptb <- map(1:n_ptb, function(i) sqrt(12)*rbeta(n, shape1 = 1,
+    g_ptb <- purrr::map(1:n_ptb, function(i) sqrt(12)*rbeta(n, shape1 = 1,
                                                      shape2 = 1) - sqrt(12)/2 + 1)
-    ptb_ds <- map(g_ptb, function(g) {
+    ptb_ds <- purrr::map(g_ptb, function(g) {
       deltahat_g <- mean(u1*g)
       deltahat_sg <- mean(u2*g)
       R_g <- 1 - deltahat_sg/deltahat_g
