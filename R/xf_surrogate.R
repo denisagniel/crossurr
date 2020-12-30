@@ -116,7 +116,7 @@ xf_surrogate <- function(ds,
     deltahat,
     deltahat_se = sqrt(mean(u1^2)/length(u1)),
     delta_diff = deltahat - deltahat_s,
-    dd_se = sqrt(sigmasq_diff)/length(u1)
+    dd_se = sqrt(sigmasq_diff/length(u1))
   )
   if (n_ptb > 0) {
     out %>%

@@ -48,7 +48,9 @@ xfit_dr <- function(ds,
                K = K,
                mthd = out_mthd,
                outcome_family = outcome_family,
-               learners = outcome_learners, ...)%>%
+               learners = outcome_learners,
+               predict_both_arms = TRUE,
+               ...)%>%
       select(-fold)
   }
     ps <- xfit(ds = ds,
@@ -69,6 +71,7 @@ xfit_dr <- function(ds,
                             pi > 1 - trim_at ~ 1 - trim_at,
                             TRUE ~ pi))
   }
+  # browser()
   if (!interaction_model) {
     out_ds <- mu %>%
       inner_join(ps, by = colnames(ds))

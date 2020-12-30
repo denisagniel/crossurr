@@ -1,9 +1,9 @@
 lasso <- function(x = NULL,
                         y = NULL,
-                        xvars = NULL,
-                        yname = NULL,
                         data = NULL,
                   newX = NULL,
+                  newX0 = NULL,
+                  newX1 = NULL,
                   relax = TRUE,
                   ps_fit = FALSE,
                         ...) {
@@ -27,6 +27,14 @@ lasso <- function(x = NULL,
   if (!is.null(newX)) {
     yhat <- predict(lfit, newx = newX, type = 'response', s = 'lambda.min')
     lfit$yhat <- yhat
+  }
+  if (!is.null(newX0)) {
+    yhat0 <- predict(lfit, newx = newX0, type = 'response', s = 'lambda.min')
+    lfit$yhat0 <- yhat0
+  }
+  if (!is.null(newX1)) {
+    yhat1 <- predict(lfit, newx = newX1, type = 'response', s = 'lambda.min')
+    lfit$yhat1 <- yhat1
   }
 
   lfit

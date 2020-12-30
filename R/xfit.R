@@ -10,7 +10,7 @@ xfit <- function(ds,
                  mthd = c('superlearner', 'lasso', 'parametric'),
                  ps_fit = FALSE,
                  outcome_family = gaussian(),
-                 # both_arms = FALSE,
+                 predict_both_arms = FALSE,
                     ...) {
   if (outcome_family$family == 'binomial') {
     ps_fit <- TRUE
@@ -25,30 +25,72 @@ xfit <- function(ds,
     # message(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
       filter(fold != i)
+    test_ds <- dsf %>%
+      filter(fold == i)
     if (case_only) {
       train_ds <- train_ds %>%
         filter(!!sym(a) == 1)
+
+      fit <- fold_fit(x = x,
+                           y = y,
+                           train_data = train_ds,
+                           test_data = test_ds,
+                           mthd = mthd,
+                           ps_fit = ps_fit,
+                           ...)
+      test_ds %>%
+        mutate(!!out_name := fit$yhat)
     } else if (control_only) {
       train_ds <- train_ds %>%
         filter(!!sym(a) == 0)
-    }
-    test_ds <- dsf %>%
-      filter(fold == i)
 
-    fold_fit <- fold_fit(x = x,
-                         y = y,
-                         train_data = train_ds,
-                         test_data = test_ds,
-                         mthd = mthd,
-                         ps_fit = ps_fit,
-                         ...)
+      fit <- fold_fit(x = x,
+                           y = y,
+                           train_data = train_ds,
+                           test_data = test_ds,
+                           mthd = mthd,
+                           ps_fit = ps_fit,
+                           ...)
       test_ds %>%
-        mutate(!!out_name := fold_fit$yhat)
+        mutate(!!out_name := fit$yhat)
+    } else if (predict_both_arms) {
+      test_ds0 <- test_ds %>%
+        mutate(!!sym(a) := 0)
+      test_ds1 <- test_ds %>%
+        mutate(!!sym(a) := 1)
+
+      fit <- fold_fit(x = x,
+                           y = y,
+                           train_data = train_ds,
+                           test_data0 = test_ds0,
+                      test_data1 = test_ds1,
+                           mthd = mthd,
+                           ps_fit = ps_fit,
+                           ...)
+      test_ds %>%
+        mutate(!!glue('{out_name}0') := fit$yhat0,
+               !!glue('{out_name}1') := fit$yhat1)
+    } else {
+      fit <- fold_fit(x = x,
+                      y = y,
+                      train_data = train_ds,
+                      test_data = test_ds,
+                      mthd = mthd,
+                      ps_fit = ps_fit,
+                      ...)
+      test_ds %>%
+        mutate(!!out_name := fit$yhat)
+    }
+
+
+
+
 
 
 
     # }
   })
+  # browser()
   test_l %>%
     bind_rows
 }
