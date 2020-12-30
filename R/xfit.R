@@ -21,8 +21,8 @@ xfit <- function(ds,
   dsf <- ds %>%
     mutate(fold = sample(foldn))
   test_l <- map(1:K, function(i) {
-    #browser()
-    message(glue('Fitting fold {i}...'))
+    # browser()
+    # message(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
       filter(fold != i)
     if (case_only) {
