@@ -25,13 +25,28 @@ super_learn <- function(x = NULL,
                                      SL.library = learners,
                                      family = binomial,
                                      ...)
-  } else {
+    sl$yhat <- sl$SL.predict
+  } else if (is.null(newX0) & is.null(newX1)) {
     sl <- SuperLearner::SuperLearner(Y = y,
                                      X = x,
                                      SL.library = learners,
                                      ...)
+    sl$yhat <- sl$SL.predict
+  } else {
+    sl0 <- SuperLearner::SuperLearner(Y = y,
+                                     X = x,
+                                     SL.library = learners,
+                                     newX = newX0,
+                                     ...)
+    sl1 <- SuperLearner::SuperLearner(Y = y,
+                                      X = x,
+                                      SL.library = learners,
+                                      newX = newX1,
+                                      ...)
+    sl <- sl1
+    sl$yhat1 <- sl1$SL.predict
+    sl$yhat0 <- sl0$SL.predict
   }
 
-  sl$yhat <- sl$SL.predict
   sl
 }
