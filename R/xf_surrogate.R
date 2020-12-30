@@ -41,13 +41,13 @@ xf_surrogate <- function(ds,
                            outcome_family = outcome_family,
                            mthd = mthd, ...)
     ybar1 <- ds %>%
-      filter(a == 1) %>%
-      mean(ybar = !!sym(y)) %>%
-      pull(ybar)
+      filter(!!sym(a) == 1) %>%
+      mutate(ybar = !!sym(y)) %>%
+      pull(ybar) %>% mean()
     ybar0 <- ds %>%
-      filter(a == 0) %>%
-      mean(ybar = !!sym(y)) %>%
-      pull(ybar)
+      filter(!!sym(a) == 0) %>%
+      mutate(ybar = !!sym(y)) %>%
+      pull(ybar) %>% mean()
 
   } else {
     delta_s_fit <- xfit_dr(ds = ds,
