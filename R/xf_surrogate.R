@@ -24,15 +24,12 @@ xf_surrogate <- function(ds,
                            trim_at = trim_at,
                            outcome_family = outcome_family,
                            mthd = mthd, ...)
-    ybar1 <- ds %>%
-      filter(a == 1) %>%
-      mean(ybar = !!sym(y)) %>%
-      pull(ybar)
-    ybar0 <- ds %>%
-      filter(a == 0) %>%
-      mean(ybar = !!sym(y)) %>%
-      pull(ybar)
-
+    n1 <- sum(ds$a)
+    n0 <- sum(1-ds$a)
+    u1 <- ds %>%
+      mutate(u_i = n/n1*a*y - n/n0*(1-a)*y) %>%
+      pull(u_i)
+    deltahat <- mean(u1)
   } else {
     delta_s_fit <- xfit_dr(ds = ds,
                            x = c(x, s),
