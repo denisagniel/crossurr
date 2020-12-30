@@ -6,12 +6,14 @@
 #'@param a treatment variable name (eg. groups). Expect a binary variable made of \code{1}s and \code{0}s.
 #'@param K number of folds for cross validation. Default is \code{5}
 #'@param outcome_learners Default is \code{NULL}
-#'@ps_learners only used for the superlearner
-#'@interaction_model TRUE
-#'@param trim_at 0.05
-#'@param outcome_family gaussian
-#'@param Default is \code{'superlearner'}
-#'@param Number of perturbations. Default is \code{0} which means asymptotics
+#'@param ps_learners only used for the superlearner
+#'@param interaction_model logical indicating wether an interaction model should be considered.
+#'Default is \code{TRUE}
+#'@param trim_at Default is \code{0.05}
+#'@param outcome_family Default is \code{gaussian
+#'@param mthd Regression method. Default is \code{'superlearner'}, other choice
+#'is \code{'lasso'}.
+#'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
 #'
 #'@export
 xf_surrogate <- function(ds,
@@ -103,6 +105,7 @@ xf_surrogate <- function(ds,
                 R_ptb_se = sd(R_g)) %>%
       mutate(ptb_ds = list(ptb_ds))
   }
+  browser()
   sigmasq <- mean(u1^2/deltahat^2 + u2^2*deltahat_s^2/deltahat^4 - 2*u1*u2*deltahat_s/deltahat^3)
   sigmasq_diff <- mean(u1^2 + u2^2 - 2*u1*u2)
   out <- tibble(
