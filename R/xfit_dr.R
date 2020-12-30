@@ -71,11 +71,11 @@ xfit_dr <- function(ds,
   }
   if (!interaction_model) {
     out_ds <- mu %>%
-      inner_join(ps)
+      inner_join(ps, by = colnames(ds))
   } else {
     out_ds <- mu0 %>%
-      inner_join(mu1) %>%
-      inner_join(ps)
+      inner_join(mu1, by = colnames(ds)) %>%
+      inner_join(ps, by = colnames(ds))
   }
     #browser()
     out_ds <- out_ds %>%
