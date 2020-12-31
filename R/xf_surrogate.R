@@ -1,3 +1,5 @@
+#'A function for ...
+#'
 #'
 #'@param ds a \code{data.frame}.
 #'@param x names any other covariates (eg. age, sex, etc). Default is \code{NULL}.
@@ -10,7 +12,7 @@
 #'@param interaction_model logical indicating wether an interaction model should be considered.
 #'Default is \code{TRUE}
 #'@param trim_at Default is \code{0.05}
-#'@param outcome_family Default is \code{gaussian
+#'@param outcome_family Default is \code{'gaussian'}. Other choice is \code{'binomial'} for binary outcome.
 #'@param mthd Regression method. Default is \code{'superlearner'}, other choice
 #'is \code{'lasso'}.
 #'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
@@ -30,6 +32,9 @@ xf_surrogate <- function(ds,
                          mthd = 'superlearner',
                          n_ptb = 0,
                          ...) {
+
+  n <- nrow(ds)
+
   if (is.null(x)) {
     delta_s_fit <- xfit_dr(ds = ds,
                            x = s,
@@ -43,10 +48,10 @@ xf_surrogate <- function(ds,
                            outcome_family = outcome_family,
                            mthd = mthd, ...)
 
-    n1 <- sum(ds$a)
-    n0 <- sum(1-ds$a)
+    n1 <- sum(ds %>% pull(!!sym(a)))
+    n0 <- sum( 1 - ds %>% pull(!!sym(a)))
     u1 <- ds %>%
-      mutate(u_i = n/n1*a*y - n/n0*(1-a)*y) %>%
+      mutate(u_i = n/n1*!!sym(a)*!!sym(y) - n/n0*(1-!!sym(a))*!!sym(y)) %>%
       pull(u_i)
     deltahat <- mean(u1)
   } else {
@@ -75,9 +80,6 @@ xf_surrogate <- function(ds,
     deltahat <- delta_fit$estimate
     u1 <- delta_fit$observation_data[[1]]$u_i
   }
-  n <- nrow(ds)
-
-
 
   u2 <- delta_s_fit$observation_data[[1]]$u_i
 
@@ -117,7 +119,8 @@ xf_surrogate <- function(ds,
     dd_se = sqrt(sigmasq_diff/length(u1))
   )
   if (n_ptb > 0) {
-    out %>%
+    out <- out %>%
       full_join(ptb_out, by = character())
-  } else out
+  }
+  return(out)
 }
