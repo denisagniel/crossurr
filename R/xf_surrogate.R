@@ -42,15 +42,13 @@ xf_surrogate <- function(ds,
                            trim_at = trim_at,
                            outcome_family = outcome_family,
                            mthd = mthd, ...)
-    ybar1 <- ds %>%
-      filter(!!sym(a) == 1) %>%
-      mutate(ybar = !!sym(y)) %>%
-      pull(ybar) %>% mean()
-    ybar0 <- ds %>%
-      filter(!!sym(a) == 0) %>%
-      mutate(ybar = !!sym(y)) %>%
-      pull(ybar) %>% mean()
 
+    n1 <- sum(ds$a)
+    n0 <- sum(1-ds$a)
+    u1 <- ds %>%
+      mutate(u_i = n/n1*a*y - n/n0*(1-a)*y) %>%
+      pull(u_i)
+    deltahat <- mean(u1)
   } else {
     delta_s_fit <- xfit_dr(ds = ds,
                            x = c(x, s),
@@ -87,7 +85,7 @@ xf_surrogate <- function(ds,
 
   if (n_ptb > 0) {
     g_ptb <- purrr::map(1:n_ptb, function(i) sqrt(12)*rbeta(n, shape1 = 1,
-                                                     shape2 = 1) - sqrt(12)/2 + 1)
+                                                            shape2 = 1) - sqrt(12)/2 + 1)
     ptb_ds <- purrr::map(g_ptb, function(g) {
       deltahat_g <- mean(u1*g)
       deltahat_sg <- mean(u2*g)
@@ -105,7 +103,7 @@ xf_surrogate <- function(ds,
                 R_ptb_se = sd(R_g)) %>%
       mutate(ptb_ds = list(ptb_ds))
   }
-  browser()
+
   sigmasq <- mean(u1^2/deltahat^2 + u2^2*deltahat_s^2/deltahat^4 - 2*u1*u2*deltahat_s/deltahat^3)
   sigmasq_diff <- mean(u1^2 + u2^2 - 2*u1*u2)
   out <- tibble(
