@@ -33,6 +33,41 @@ xf_surrogate <- function(ds,
                          n_ptb = 0,
                          ...) {
 
+  #sanity checks
+  if(!is.null(x)){
+    if(sum(is.na(ds[,x]))>1){
+      stop("no missing values allowed in 'x'")
+    }
+    isfact <- sapply(ds[, x], is.factor)
+    if(sum(isfact) > 0 | sum(sapply(ds[, x], is.character))>0){
+      stop("only numeric covariates allowed in 'x'. Please consider using model.matrix() beforehand...")
+    }
+    # if(sum(isfact>1)){
+    #   newx <- as.matrix(model.matrix(as.formula(paste0(c("~", all_of(x)[isfact]), collapse = " + ")), data=ds)[,-1, drop=FALSE])
+    #   temp <- ds %>% select(-all_of(x)[isfact])
+    #     mutate(newx, after = x[!isfact][length(x[!isfact])])
+    #
+    #   x <- x[!isfact]
+    #   x <- append(x, colnames(newx))
+    # }
+  }
+  if(sum(sapply(ds[, s], is.factor))>0 | sum(sapply(ds[, s], is.character))>0){
+    stop("only numeric surrogate allowed in 's'")
+  }
+  if(sum(is.na(ds[,s]))>1){
+    stop("no missing values allowed in 's'")
+  }
+
+  if(any(!(ds[, a] %in% c(0,1)))){
+    stop("Treatment 'a' should only contain 0s and 1s")
+  }
+  if(sum(is.na(ds[,a]))>1){
+    stop("no missing values allowed in 'a'")
+  }
+  if(sum(is.na(ds[,y]))>1){
+    stop("no missing values allowed in 'y'")
+  }
+
   n <- nrow(ds)
 
   if (is.null(x)) {
