@@ -17,6 +17,8 @@
 #'is \code{'lasso'}.
 #'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
 #'
+#'@importFrom purrr map
+#'
 #'@export
 xf_surrogate <- function(ds,
                          x = NULL,
