@@ -9,6 +9,7 @@ xfit_dr <- function(ds,
                     trim_at = 0.05,
                     outcome_family = gaussian(),
                     mthd = 'superlearner',
+                    ncores = parallel::detectCores()-1,
                     ...) {
   if(mthd == 'parametric') {
     out_mthd <- 'ols'
@@ -26,7 +27,8 @@ xfit_dr <- function(ds,
                 control_only = TRUE,
                 mthd = out_mthd,
                 outcome_family = outcome_family,
-                learners = outcome_learners, ...) %>%
+                learners = outcome_learners,
+                ncores = ncores, ...) %>%
       select(-fold)
     mu1 <- xfit(ds = ds,
                 x = x,
@@ -37,7 +39,8 @@ xfit_dr <- function(ds,
                 case_only = TRUE,
                 mthd = out_mthd,
                 outcome_family = outcome_family,
-                learners = outcome_learners, ...)%>%
+                learners = outcome_learners,
+                ncores = ncores, ...)%>%
       select(-fold)
   } else {
     mu <- xfit(ds = ds,
@@ -50,7 +53,7 @@ xfit_dr <- function(ds,
                outcome_family = outcome_family,
                learners = outcome_learners,
                predict_both_arms = TRUE,
-               ...)%>%
+               ncores = ncores, ...)%>%
       select(-fold)
   }
     ps <- xfit(ds = ds,
@@ -62,7 +65,7 @@ xfit_dr <- function(ds,
                   learners = ps_learners,
                ps_fit = TRUE,
                outcome_family = outcome_family,
-               ...) %>%
+               ncores = ncores, ...) %>%
     select(-fold)
 
   if (trim_at != 0) {

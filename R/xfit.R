@@ -11,7 +11,8 @@ xfit <- function(ds,
                  ps_fit = FALSE,
                  outcome_family = gaussian(),
                  predict_both_arms = FALSE,
-                    ...) {
+                 ncores = parallel::detectCores()-1,
+                 ...) {
   if (outcome_family$family == 'binomial') {
     ps_fit <- TRUE
   }
@@ -20,7 +21,8 @@ xfit <- function(ds,
   foldn <- rep(1:K, ceiling(n/K))[1:n]
   dsf <- ds %>%
     mutate(fold = sample(foldn))
-  test_l <- map(1:K, function(i) {
+
+  test_l <- pbapply::pblapply(1:K, function(i) {
     # browser()
     # message(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
@@ -32,12 +34,12 @@ xfit <- function(ds,
         filter(!!sym(a) == 1)
 
       fit <- fold_fit(x = x,
-                           y = y,
-                           train_data = train_ds,
-                           test_data = test_ds,
-                           mthd = mthd,
-                           ps_fit = ps_fit,
-                           ...)
+                      y = y,
+                      train_data = train_ds,
+                      test_data = test_ds,
+                      mthd = mthd,
+                      ps_fit = ps_fit,
+                      ...)
       test_ds %>%
         mutate(!!out_name := fit$yhat)
     } else if (control_only) {
@@ -45,12 +47,12 @@ xfit <- function(ds,
         filter(!!sym(a) == 0)
 
       fit <- fold_fit(x = x,
-                           y = y,
-                           train_data = train_ds,
-                           test_data = test_ds,
-                           mthd = mthd,
-                           ps_fit = ps_fit,
-                           ...)
+                      y = y,
+                      train_data = train_ds,
+                      test_data = test_ds,
+                      mthd = mthd,
+                      ps_fit = ps_fit,
+                      ...)
       test_ds %>%
         mutate(!!out_name := fit$yhat)
     } else if (predict_both_arms) {
@@ -60,13 +62,13 @@ xfit <- function(ds,
         mutate(!!sym(a) := 1)
 
       fit <- fold_fit(x = x,
-                           y = y,
-                           train_data = train_ds,
-                           test_data0 = test_ds0,
+                      y = y,
+                      train_data = train_ds,
+                      test_data0 = test_ds0,
                       test_data1 = test_ds1,
-                           mthd = mthd,
-                           ps_fit = ps_fit,
-                           ...)
+                      mthd = mthd,
+                      ps_fit = ps_fit,
+                      ...)
       test_ds %>%
         mutate(!!glue('{out_name}0') := fit$yhat0,
                !!glue('{out_name}1') := fit$yhat1)
@@ -89,8 +91,7 @@ xfit <- function(ds,
 
 
     # }
-  })
-  # browser()
+  }, cl = ncores)
   test_l %>%
     bind_rows
 }

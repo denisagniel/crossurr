@@ -33,6 +33,7 @@ xf_surrogate <- function(ds,
                          outcome_family = gaussian(),
                          mthd = 'superlearner',
                          n_ptb = 0,
+                         ncores = parallel::detectCores()-1,
                          ...) {
 
   #sanity checks
@@ -83,7 +84,8 @@ xf_surrogate <- function(ds,
                            interaction_model = interaction_model,
                            trim_at = trim_at,
                            outcome_family = outcome_family,
-                           mthd = mthd, ...)
+                           mthd = mthd,
+                           ncores = ncores, ...)
 
     n1 <- sum(ds %>% pull(!!sym(a)))
     n0 <- sum( 1 - ds %>% pull(!!sym(a)))
@@ -102,7 +104,8 @@ xf_surrogate <- function(ds,
                            interaction_model = interaction_model,
                            trim_at = trim_at,
                            outcome_family = outcome_family,
-                           mthd = mthd, ...)
+                           mthd = mthd,
+                           ncores = ncores, ...)
     delta_fit <- xfit_dr(ds = ds,
                          x = x,
                          y = y,
@@ -113,7 +116,8 @@ xf_surrogate <- function(ds,
                          interaction_model = interaction_model,
                          trim_at = trim_at,
                          outcome_family = outcome_family,
-                         mthd = mthd, ...)
+                         mthd = mthd,
+                         ncores = ncores, ...)
     deltahat <- delta_fit$estimate
     u1 <- delta_fit$observation_data[[1]]$u_i
   }
