@@ -8,10 +8,21 @@ super_learn <- function(x = NULL,
                                      "SL.svm",
                                      "SL.ridge"),
                         ps_fit = FALSE,
+                        newX0 = NULL,
+                        newX1 = NULL,
                         ...) {
   # if (!inherits(yname, 'quosure')) {
   #   yn <- enquo(yname)
   # } else yn <- yname
+
+  if(is.null(learners)){
+    learners <- c("SL.mean",
+                  "SL.glmnet",
+                  "SL.ranger",
+                  "SL.gbm",
+                  "SL.svm",
+                  "SL.ridge")
+  }
 
   if (!is.null(data)) {
     x <- data %>%
@@ -34,10 +45,10 @@ super_learn <- function(x = NULL,
     sl$yhat <- sl$SL.predict
   } else {
     sl0 <- SuperLearner::SuperLearner(Y = y,
-                                     X = x,
-                                     SL.library = learners,
-                                     newX = newX0,
-                                     ...)
+                                      X = x,
+                                      SL.library = learners,
+                                      newX = newX0,
+                                      ...)
     sl1 <- SuperLearner::SuperLearner(Y = y,
                                       X = x,
                                       SL.library = learners,
@@ -48,5 +59,5 @@ super_learn <- function(x = NULL,
     sl$yhat0 <- sl0$SL.predict
   }
 
-  sl
+  return(sl)
 }
