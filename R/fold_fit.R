@@ -17,6 +17,8 @@ fold_fit <- function(
         x = x,
         y = y,
         data = train_data,
+        newX0 = NULL,
+        newX1 = NULL,
         newX = test_x,
         ps_fit = ps_fit,
         ...)
