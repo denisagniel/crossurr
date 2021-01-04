@@ -1,7 +1,7 @@
 xfit <- function(ds,
                  x,
                  y,
-                 a = NULL,
+                 a,
                  out_name,
                  K = 5,
                  seed = rnorm(1),
@@ -21,10 +21,6 @@ xfit <- function(ds,
   foldn <- rep(1:K, ceiling(n/K))[1:n]
   dsf <- ds %>%
     mutate(fold = sample(foldn))
-
-  if(is.null(a)){
-    a <- "a"
-  }
 
   test_l <- pbapply::pblapply(1:K, function(i) {
     # browser()
