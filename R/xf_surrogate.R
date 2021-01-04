@@ -16,6 +16,7 @@
 #'@param mthd Regression method. Default is \code{'superlearner'}, other choice
 #'is \code{'lasso'}.
 #'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
+#'@param ... additional parameters (in particular for super_learner)
 #'
 #'@importFrom purrr map
 #'
@@ -27,7 +28,7 @@ xf_surrogate <- function(ds,
                          a,
                          K = 5,
                          outcome_learners = NULL,
-                         ps_learners = NULL,
+                         ps_learners = outcome_learners,
                          interaction_model = TRUE,
                          trim_at = 0.05,
                          outcome_family = gaussian(),

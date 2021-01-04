@@ -92,7 +92,7 @@ xfit <- function(ds,
 
     # }
   }, cl = ncores)
-  test_l %>%
-    bind_rows
+
+  return(test_l %>% bind_rows())
 }
 

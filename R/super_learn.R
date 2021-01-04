@@ -15,15 +15,6 @@ super_learn <- function(x = NULL,
   #   yn <- enquo(yname)
   # } else yn <- yname
 
-  if(is.null(learners)){
-    learners <- c("SL.mean",
-                  "SL.glmnet",
-                  "SL.ranger",
-                  "SL.gbm",
-                  "SL.svm",
-                  "SL.ridge")
-  }
-
   if (!is.null(data)) {
     x <- data %>%
       select(all_of(x))
