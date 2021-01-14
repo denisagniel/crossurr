@@ -62,7 +62,7 @@ xf_surrogate <- function(ds,
     stop("no missing values allowed in 's'")
   }
 
-  if(any(!(ds[, a] %in% c(0,1)))){
+  if(any(!(unlist(ds[, a]) %in% c(0,1)))){
     stop("Treatment 'a' should only contain 0s and 1s")
   }
   if(sum(is.na(ds[,a]))>1){
