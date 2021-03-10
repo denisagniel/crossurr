@@ -124,8 +124,12 @@ xf_surrogate <- function(ds,
   }
 
   u2 <- delta_s_fit$observation_data[[1]]$u_i
-
   deltahat_s <- delta_s_fit$estimate
+
+  w_o <- delta_s_fit$observation_data[[1]] %>%
+    mutate(theta = 1*(pi > trim_at & pi < 1 - trim_at)) %>%
+    pull(theta)
+  deltahat_s_o <- mean(w_o*u2)
 
   if (n_ptb > 0) {
     g_ptb <- purrr::map(1:n_ptb, function(i) sqrt(12)*rbeta(n, shape1 = 1,
@@ -149,12 +153,18 @@ xf_surrogate <- function(ds,
   }
 
   sigmasq <- mean(u1^2/deltahat^2 + u2^2*deltahat_s^2/deltahat^4 - 2*u1*u2*deltahat_s/deltahat^3)
+  sigmasq_o <- mean(u1^2/deltahat^2 + (w_o*u2)^2*deltahat_s^2/deltahat^4 - 2*w_o*u1*u2*deltahat_s/deltahat^3)
   sigmasq_diff <- mean(u1^2 + u2^2 - 2*u1*u2)
   out <- tibble(
     R = 1 - deltahat_s/deltahat,
     R_se = sqrt(sigmasq/length(u1)),
     deltahat_s,
     deltahat_s_se = sqrt(mean(u2^2)/length(u2)),
+    pi_o = mean(w_o),
+    R_o = 1 - deltahat_s_o/deltahat,
+    R_o_se = sqrt(sigmasq_o/length(u1)),
+    deltahat_s_o,
+    deltahat_s_se_o = sqrt(mean((w_o*u2)^2)/length(u2)),
     deltahat,
     deltahat_se = sqrt(mean(u1^2)/length(u1)),
     delta_diff = deltahat - deltahat_s,
