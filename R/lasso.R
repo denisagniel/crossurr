@@ -37,5 +37,5 @@ lasso <- function(x = NULL,
     lfit$yhat1 <- yhat1
   }
 
-  lfit
+  return(lfit)
 }
