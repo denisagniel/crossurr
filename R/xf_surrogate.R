@@ -127,7 +127,7 @@ xf_surrogate <- function(ds,
   deltahat_s <- delta_s_fit$estimate
 
   w_o <- delta_s_fit$observation_data[[1]] %>%
-    mutate(theta = 1*(pi > trim_at & pi < 1 - trim_at)) %>%
+    mutate(theta = 1*(pi1 > trim_at & pi0 > trim_at)) %>%
     pull(theta)
   deltahat_s_o <- mean(w_o*u2)
 

@@ -35,6 +35,18 @@ fold_fit <- function(
         ps_fit = ps_fit,
         # family = NULL,
         ...)
+    } else if (mthd == 'sis') {
+      test_x <- test_data %>%
+        select(all_of(x)) %>%
+        as.matrix
+      fit <- sis(
+        x = x,
+        y = y,
+        data = train_data,
+        newX = test_x,
+        ps_fit = ps_fit,
+        # family = NULL,
+        ...)
     } else if (mthd == 'ols') {
       fit <- ols(x = x,
                  y = y,
@@ -76,7 +88,22 @@ fold_fit <- function(
         data = train_data,
         newX0 = test_x0,
         newX1 = test_x1,
-        learners = learners,
+        ps_fit = ps_fit,
+        # family = NULL,
+        ...)
+    } else if (mthd == 'sis') {
+      test_x0 <- test_data0 %>%
+        select(all_of(x)) %>%
+        as.matrix
+      test_x1 <- test_data1 %>%
+        select(all_of(x)) %>%
+        as.matrix
+      fit <- sis(
+        x = x,
+        y = y,
+        data = train_data,
+        newX0 = test_x0,
+        newX1 = test_x1,
         ps_fit = ps_fit,
         # family = NULL,
         ...)
