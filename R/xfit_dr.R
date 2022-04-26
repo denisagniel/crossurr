@@ -17,82 +17,102 @@ xfit_dr <- function(ds,
   } else {
     out_mthd <- ps_mthd <- mthd
   }
-  if (interaction_model) {
-    mu0 <- xfit(ds = ds,
-                x = x,
-                y = y,
-                a = a,
-                out_name = 'mu0',
-                K = K,
-                control_only = TRUE,
-                mthd = out_mthd,
-                outcome_family = outcome_family,
-                learners = outcome_learners,
-                ncores = ncores, ...) %>%
-      select(-fold)
-    mu1 <- xfit(ds = ds,
-                x = x,
-                y = y,
-                a = a,
-                out_name = 'mu1',
-                K = K,
-                case_only = TRUE,
-                mthd = out_mthd,
-                outcome_family = outcome_family,
-                learners = outcome_learners,
-                ncores = ncores, ...)%>%
-      select(-fold)
+  if (mthd == 'cal') {
+    cal_fit <- RCAL::ate.regu.cv(fold = c(K, K),
+                                 nrho = c(11, 11),
+                                 y = ds %>% pull(y),
+                                 tr = ds %>% pull(a),
+                                 x = ds %>% select(any_of(x)) %>% as.matrix
+                                 )
+    out_ds <- ds %>%
+      mutate(mu1 = cal_fit$mfo[,2],
+             mu0 = cal_fit$mfo[,1],
+             pi1 = cal_fit$mfp[,2],
+             pi0 = cal_fit$mfp[,1])
   } else {
-    mu <- xfit(ds = ds,
-               x = c(x, a),
-               y = y,
-               a = a,
-               out_name = 'mu',
+    if (interaction_model) {
+      mu0 <- xfit(ds = ds,
+                  x = x,
+                  y = y,
+                  a = a,
+                  out_name = 'mu0',
+                  K = K,
+                  control_only = TRUE,
+                  mthd = out_mthd,
+                  outcome_family = outcome_family,
+                  learners = outcome_learners,
+                  ncores = ncores, ...) %>%
+        select(-fold)
+      mu1 <- xfit(ds = ds,
+                  x = x,
+                  y = y,
+                  a = a,
+                  out_name = 'mu1',
+                  K = K,
+                  case_only = TRUE,
+                  mthd = out_mthd,
+                  outcome_family = outcome_family,
+                  learners = outcome_learners,
+                  ncores = ncores, ...)%>%
+        select(-fold)
+    } else {
+      mu <- xfit(ds = ds,
+                 x = c(x, a),
+                 y = y,
+                 a = a,
+                 out_name = 'mu',
+                 K = K,
+                 mthd = out_mthd,
+                 outcome_family = outcome_family,
+                 learners = outcome_learners,
+                 predict_both_arms = TRUE,
+                 ncores = ncores, ...)%>%
+        select(-fold)
+    }
+    ps <- xfit(ds = ds,
+               x = x,
+               y = a,
                K = K,
-               mthd = out_mthd,
+               mthd = ps_mthd,
+               out_name = 'pi',
+               learners = ps_learners,
+               ps_fit = TRUE,
                outcome_family = outcome_family,
-               learners = outcome_learners,
-               predict_both_arms = TRUE,
-               ncores = ncores, ...)%>%
+               ncores = ncores, ...) %>%
       select(-fold)
-  }
-  ps <- xfit(ds = ds,
-             x = x,
-             y = a,
-             K = K,
-             mthd = ps_mthd,
-             out_name = 'pi',
-             learners = ps_learners,
-             ps_fit = TRUE,
-             outcome_family = outcome_family,
-             ncores = ncores, ...) %>%
-    select(-fold)
 
-  if (trim_at != 0) {
-    ps <- ps %>%
-      mutate(pi = case_when(pi < trim_at ~ trim_at,
-                            pi > 1 - trim_at ~ 1 - trim_at,
-                            TRUE ~ pi))
+    if (trim_at != 0) {
+      ps <- ps %>%
+        mutate(pi1 = case_when(pi < trim_at ~ trim_at,
+                               pi > 1 - trim_at ~ 1 - trim_at,
+                               TRUE ~ pi),
+               pi0 = 1 - pi1)
+    } else {
+      ps <- ps %>%
+        mutate(pi1 = pi,
+               pi0 = 1 - pi1)
+    }
+    # browser()
+    if (!interaction_model) {
+      out_ds <- mu %>%
+        inner_join(ps, by = colnames(ds))
+    } else {
+      out_ds <- mu0 %>%
+        inner_join(mu1, by = colnames(ds)) %>%
+        inner_join(ps, by = colnames(ds))
+    }
   }
-  # browser()
-  if (!interaction_model) {
-    out_ds <- mu %>%
-      inner_join(ps, by = colnames(ds))
-  } else {
-    out_ds <- mu0 %>%
-      inner_join(mu1, by = colnames(ds)) %>%
-      inner_join(ps, by = colnames(ds))
-  }
+
   #browser()
   out_ds <- out_ds %>%
     mutate(u_i = mu1 - mu0 +
-             (!!sym(a))*((!!sym(y)) - mu1)/pi -
-             (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi),
-           u_i1 = mu1 + (!!sym(a))*((!!sym(y)) - mu1)/pi,
-           u_i0 = mu0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/(1-pi),
+             (!!sym(a))*((!!sym(y)) - mu1)/pi1 -
+             (1-(!!sym(a)))*((!!sym(y))-mu0)/pi0,
+           u_i1 = mu1 + (!!sym(a))*((!!sym(y)) - mu1)/pi1,
+           u_i0 = mu0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/pi0,
            om_u_i = mu1 - mu0,
-           ipw_u_i = (!!sym(a))*(!!sym(y))/pi -
-             (1-(!!sym(a)))*(!!sym(y))/(1-pi))
+           ipw_u_i = (!!sym(a))*(!!sym(y))/pi1 -
+             (1-(!!sym(a)))*(!!sym(y))/pi0)
   n <- nrow(out_ds)
   out_ds %>%
     summarise(estimate = mean(u_i),
@@ -110,7 +130,8 @@ xfit_dr <- function(ds,
                                         select(u_i,
                                                mu1,
                                                mu0,
-                                               pi,
+                                               pi1,
+                                               pi0,
                                                a,
                                                y)))
 }

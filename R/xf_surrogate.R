@@ -127,7 +127,7 @@ xf_surrogate <- function(ds,
   deltahat_s <- delta_s_fit$estimate
 
   w_o <- delta_s_fit$observation_data[[1]] %>%
-    mutate(theta = 1*(pi > trim_at & pi < 1 - trim_at)) %>%
+    mutate(theta = 1*(pi1 > trim_at & pi0 > trim_at)) %>%
     pull(theta)
   deltahat_s_o <- mean(w_o*u2)
 
@@ -152,8 +152,8 @@ xf_surrogate <- function(ds,
       mutate(ptb_ds = list(ptb_ds))
   }
 
-  sigmasq <- mean(u1^2/deltahat^2 + u2^2*deltahat_s^2/deltahat^4 - 2*u1*u2*deltahat_s/deltahat^3)
-  sigmasq_o <- mean(u1^2/deltahat^2 + (w_o*u2)^2*deltahat_s^2/deltahat^4 - 2*w_o*u1*u2*deltahat_s/deltahat^3)
+  sigmasq <- mean(u2^2/deltahat^2 + u1^2*deltahat_s^2/deltahat^4 - 2*u1*u2*deltahat_s/deltahat^3)
+  sigmasq_o <- mean(u2^2/deltahat^2 + (w_o*u1)^2*deltahat_s^2/deltahat^4 - 2*w_o*u1*u2*deltahat_s/deltahat^3)
   sigmasq_diff <- mean(u1^2 + u2^2 - 2*u1*u2)
   out <- tibble(
     R = 1 - deltahat_s/deltahat,
