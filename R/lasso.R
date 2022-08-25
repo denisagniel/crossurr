@@ -1,3 +1,8 @@
+#' lasso
+#'
+#' @importFrom glmnet predict.glmnet cv.glmnet
+#' @importFrom stats predict
+#' @keywords internal
 lasso <- function(x = NULL,
                         y = NULL,
                         data = NULL,

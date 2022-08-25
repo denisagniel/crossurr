@@ -1,3 +1,5 @@
+#'@importFrom SIS SIS
+#'@importFrom stats predict
 sis <- function(x = NULL,
                   y = NULL,
                   data = NULL,

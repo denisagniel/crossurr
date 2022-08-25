@@ -1,3 +1,7 @@
+#' Title
+#'
+#'@importFrom RCAL ate.regu.cv
+#'@keywords internal
 xfit_dr <- function(ds,
                     x,
                     y,
@@ -42,7 +46,7 @@ xfit_dr <- function(ds,
                   outcome_family = outcome_family,
                   learners = outcome_learners,
                   ncores = ncores, ...) %>%
-        select(-fold)
+        select(-!!sym("fold"))
       mu1 <- xfit(ds = ds,
                   x = x,
                   y = y,
@@ -54,7 +58,7 @@ xfit_dr <- function(ds,
                   outcome_family = outcome_family,
                   learners = outcome_learners,
                   ncores = ncores, ...)%>%
-        select(-fold)
+        select(-!!sym("fold"))
     } else {
       mu <- xfit(ds = ds,
                  x = c(x, a),
@@ -66,8 +70,8 @@ xfit_dr <- function(ds,
                  outcome_family = outcome_family,
                  learners = outcome_learners,
                  predict_both_arms = TRUE,
-                 ncores = ncores, ...)%>%
-        select(-fold)
+                 ncores = ncores, ...) %>%
+        select(-!!sym("fold"))
     }
     ps <- xfit(ds = ds,
                x = x,
@@ -79,18 +83,18 @@ xfit_dr <- function(ds,
                ps_fit = TRUE,
                outcome_family = outcome_family,
                ncores = ncores, ...) %>%
-      select(-fold)
+      select(-!!sym("fold"))
 
     if (trim_at != 0) {
       ps <- ps %>%
         mutate(pi1 = case_when(pi < trim_at ~ trim_at,
                                pi > 1 - trim_at ~ 1 - trim_at,
                                TRUE ~ pi),
-               pi0 = 1 - pi1)
+               pi0 = 1 - !!sym("pi1"))
     } else {
       ps <- ps %>%
         mutate(pi1 = pi,
-               pi0 = 1 - pi1)
+               pi0 = 1 - !!sym("pi1"))
     }
     # browser()
     if (!interaction_model) {
@@ -106,32 +110,32 @@ xfit_dr <- function(ds,
   #browser()
   out_ds <- out_ds %>%
     mutate(u_i = mu1 - mu0 +
-             (!!sym(a))*((!!sym(y)) - mu1)/pi1 -
-             (1-(!!sym(a)))*((!!sym(y))-mu0)/pi0,
-           u_i1 = mu1 + (!!sym(a))*((!!sym(y)) - mu1)/pi1,
-           u_i0 = mu0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/pi0,
+             (!!sym(a))*((!!sym(y)) - mu1)/!!sym("pi1") -
+             (1-(!!sym(a)))*((!!sym(y))-mu0)/!!sym("pi0"),
+           u_i1 = mu1 + (!!sym(a))*((!!sym(y)) - mu1)/!!sym("pi1"),
+           u_i0 = mu0 + (1-(!!sym(a)))*((!!sym(y))-mu0)/!!sym("pi0"),
            om_u_i = mu1 - mu0,
-           ipw_u_i = (!!sym(a))*(!!sym(y))/pi1 -
-             (1-(!!sym(a)))*(!!sym(y))/pi0)
+           ipw_u_i = (!!sym(a))*(!!sym(y))/!!sym("pi1") -
+             (1-(!!sym(a)))*(!!sym(y))/!!sym("pi0"))
   n <- nrow(out_ds)
   out_ds %>%
-    summarise(estimate = mean(u_i),
-              E_Y1 = mean(u_i1),
-              E_Y0 = mean(u_i0),
+    summarise(estimate = mean(!!sym("u_i")),
+              E_Y1 = mean(!!sym("u_i1")),
+              E_Y0 = mean(!!sym("u_i0")),
               # sigmasq = mean(u_i^2),
-              se = sqrt(mean(u_i^2))/sqrt(n),
-              om_est = mean(om_u_i),
-              om_se = sqrt(mean(om_u_i^2)/n),
-              ipw_est = mean(ipw_u_i),
-              ipw_se = sqrt(mean(ipw_u_i^2)/n),
-              risk_ratio = E_Y1/E_Y0,
-              rr_se = sqrt(mean(u_i1^2/E_Y0^2 + E_Y1^2/E_Y0^4*u_i0^2 - 2*E_Y1/E_Y0^3*u_i1*u_i0)/n),
+              se = sqrt(mean(!!sym("u_i")^2))/sqrt(n),
+              om_est = mean(!!sym("om_u_i")),
+              om_se = sqrt(mean(!!sym("om_u_i")^2)/n),
+              ipw_est = mean(!!sym("ipw_u_i")),
+              ipw_se = sqrt(mean(!!sym("ipw_u_i")^2)/n),
+              risk_ratio = !!sym("E_Y1")/!!sym("E_Y0"),
+              rr_se = sqrt(mean(!!sym("u_i1")^2/!!sym("E_Y0")^2 + !!sym("E_Y1")^2/!!sym("E_Y0")^4*!!sym("u_i0")^2 - 2*!!sym("E_Y1")/!!sym("E_Y0")^3*!!sym("u_i1")*!!sym("u_i0"))/n),
               observation_data = list(out_ds %>%
-                                        select(u_i,
+                                        select(!!sym("u_i"),
                                                mu1,
                                                mu0,
-                                               pi1,
-                                               pi0,
+                                               !!sym("pi1"),
+                                               !!sym("pi0"),
                                                a,
                                                y)))
 }

@@ -7,6 +7,7 @@ fold_fit <- function(
   test_data1 = NULL,
   mthd = c('superlearner', 'lasso', 'ols', 'logistic'),
   ps_fit = FALSE,
+  learners=NULL,
   ...) {
 
   if (!is.null(test_data)) {

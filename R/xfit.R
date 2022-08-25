@@ -26,9 +26,10 @@ xfit <- function(ds,
     # browser()
     # message(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
-      filter(fold != i)
+      filter(!!sym("fold") != i)
     test_ds <- dsf %>%
-      filter(fold == i)
+      filter(!!sym("fold") == i)
+
     if (case_only) {
       train_ds <- train_ds %>%
         filter(!!sym(a) == 1)
