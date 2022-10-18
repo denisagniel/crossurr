@@ -1,24 +1,36 @@
-#'A function for ...
+#' A function for estimating the proportion of treatment effect explained using repeated cross-fitting.
 #'
 #'
 #'@param ds a \code{data.frame}.
-#'@param x names any other covariates (eg. age, sex, etc). Default is \code{NULL}.
-#'@param s names surrogates
-#'@param y names outcome
+#'@param x names of all covariates in \code{ds} that should be included to control for confounding (eg. age, sex, etc). Default is \code{NULL}.
+#'@param s names of surrogates in \code{ds}.
+#'@param y name of the outcome in \code{ds}.
 #'@param a treatment variable name (eg. groups). Expect a binary variable made of \code{1}s and \code{0}s.
-#'@param epsilon tuning parameter to control the accuracy of iterative estimation of confidence intervals.
-#'@param splits number of data splits to perform when computing confidence intervals.
-#'@param K number of folds for cross validation. Default is \code{5}
-#'@param outcome_learners Default is \code{NULL}
-#'@param ps_learners only used for the superlearner
-#'@param interaction_model logical indicating wether an interaction model should be considered.
-#'Default is \code{TRUE}
-#'@param trim_at Default is \code{0.05}
-#'@param outcome_family Default is \code{'gaussian'}. Other choice is \code{'binomial'} for binary outcome.
-#'@param mthd Regression method. Default is \code{'superlearner'}, other choice
-#'is \code{'lasso'}.
-#'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
+#'@param splits number of data splits to perform.
+#'@param K number of folds for cross-fitting. Default is \code{5}.
+#'@param outcome_learners string vector indicating learners to be used for estimation of the outcome function (e.g., \code{"SL.ridge"}). See the SuperLearner package for details.
+#'@param ps_learners string vector indicating learners to be used for estimation of the propensity score function (e.g., \code{"SL.ridge"}). See the SuperLearner package for details.
+#'@param interaction_model logical indicating whether outcome functions for treated and control should be estimated separately. Default is \code{TRUE}.
+#'@param trim_at threshold at which to trim propensity scores. Default is \code{0.05}.
+#'@param outcome_family default is \code{'gaussian'} for continuous outcomes. Other choice is \code{'binomial'} for binary outcomes.
+#'@param mthd selected regression method. Default is \code{'superlearner'}, which uses the \code{SuperLearner} package for estimation. Other choices include \code{'lasso'} (which uses \code{glmnet}), \code{'sis'} (which uses \code{SIS}), \code{'cal'} (which uses \code{RCAL}).
+#'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotic standard errors are used.
 #'@param ... additional parameters (in particular for super_learner)
+#'
+#' @return a \code{tibble} with columns: \itemize{
+#'    \item \code{Rm}: estimate of the proportion of treatment effect explained, computed as the median over the repeated splits.
+#'    \item \code{R_se0} standard error for the PTE, accounting for the variability due to splitting.
+#'    \item \code{R_cil0} lower confidence interval value for the PTE.
+#'    \item \code{R_cih0} upper confidence interval value for the PTE.
+#'    \item \code{Dm}: estimate of the overall treatment effect,  computed as the median over the repeated splits.
+#'    \item \code{D_se0} standard error for the overall treatment effect, accounting for the variability due to splitting.
+#'    \item \code{D_cil0} lower confidence interval value for the overall treatment effect.
+#'    \item \code{D_cih0} upper confidence interval value for the overall treatment effect.
+#'    \item \code{Dsm}: estimate of the residual treatment effect, computed as the median over the repeated splits.
+#'    \item \code{Ds_se0} standard error for the residual treatment effect, accounting for the variability due to splitting.
+#'    \item \code{Ds_cil0} lower confidence interval value for the residual treatment effect.
+#'    \item \code{Ds_cih0} upper confidence interval value for the residual treatment effect.
+#'    }
 #'
 #'@importFrom purrr map map_df
 #'@importFrom stats median gaussian
@@ -29,7 +41,6 @@ xfr_surrogate <- function(ds,
                           s,
                           y,
                           a,
-                          epsilon = NULL,
                           splits = 50,
                           K = 5,
                           outcome_learners = NULL,
