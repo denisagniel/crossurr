@@ -2,7 +2,7 @@
 % Please edit documentation in R/xf_surrogate.R
 \name{xf_surrogate}
 \alias{xf_surrogate}
-\title{A function for ...}
+\title{A function for estimating the proportion of treatment effect explained using cross-fitting.}
 \usage{
 xf_surrogate(
   ds,
@@ -25,36 +25,51 @@ xf_surrogate(
 \arguments{
 \item{ds}{a \code{data.frame}.}
 
-\item{x}{names any other covariates (eg. age, sex, etc). Default is \code{NULL}.}
+\item{x}{names of all covariates in \code{ds} that should be included to control for confounding (eg. age, sex, etc). Default is \code{NULL}.}
 
-\item{s}{names surrogates}
+\item{s}{names of surrogates in \code{ds}.}
 
-\item{y}{names outcome}
+\item{y}{name of the outcome in \code{ds}.}
 
 \item{a}{treatment variable name (eg. groups). Expect a binary variable made of \code{1}s and \code{0}s.}
 
-\item{K}{number of folds for cross validation. Default is \code{5}}
+\item{K}{number of folds for cross-fitting. Default is \code{5}.}
 
-\item{outcome_learners}{Default is \code{NULL}}
+\item{outcome_learners}{string vector indicating learners to be used for estimation of the outcome function (e.g., \code{"SL.ridge"}). See the SuperLearner package for details.}
 
-\item{ps_learners}{only used for the superlearner}
+\item{ps_learners}{string vector indicating learners to be used for estimation of the propensity score function (e.g., \code{"SL.ridge"}). See the SuperLearner package for details.}
 
-\item{interaction_model}{logical indicating wether an interaction model should be considered.
-Default is \code{TRUE}}
+\item{interaction_model}{logical indicating whether outcome functions for treated and control should be estimated separately. Default is \code{TRUE}.}
 
-\item{trim_at}{Default is \code{0.05}}
+\item{trim_at}{threshold at which to trim propensity scores. Default is \code{0.05}.}
 
-\item{outcome_family}{Default is \code{'gaussian'}. Other choice is \code{'binomial'} for binary outcome.}
+\item{outcome_family}{default is \code{'gaussian'} for continuous outcomes. Other choice is \code{'binomial'} for binary outcomes.}
 
-\item{mthd}{Regression method. Default is \code{'superlearner'}, other choice
-is \code{'lasso'}.}
+\item{mthd}{selected regression method. Default is \code{'superlearner'}, which uses the \code{SuperLearner} package for estimation. Other choices include \code{'lasso'} (which uses \code{glmnet}), \code{'sis'} (which uses \code{SIS}), \code{'cal'} (which uses \code{RCAL}).}
 
-\item{n_ptb}{Number of perturbations. Default is \code{0} which means asymptotics}
+\item{n_ptb}{Number of perturbations. Default is \code{0} which means asymptotic standard errors are used.}
 
 \item{ncores}{number of cpus used for parallel computations. Default is \code{parallel::detectCores()-1}}
 
 \item{...}{additional parameters (in particular for super_learner)}
 }
+\value{
+a \code{tibble} with columns: \itemize{
+   \item \code{R}: estimate of the proportion of treatment effect explained, equal to 1 - \code{deltahat_s}/\code{deltahat}.
+   \item \code{R_se} standard error for the PTE.
+   \item \code{deltahat_s}: residual treatment effect estimate.
+   \item \code{deltahat_s_se}: standard error for the residual treatment effect.
+   \item \code{pi_o}: estimate of the proportion of overlap.
+   \item \code{R_o}: PTE only in the overlap region.
+   \item \code{R_o_se}: the standard error for \code{R_o}.
+   \item \code{deltahat_s_o}: residual treatment effect in overlap region,
+   \item \code{deltahat_s_se_o}: standard error for \code{deltahat_s_o}.
+   \item \code{deltahat}: overall treatment effect estimate.
+   \item \code{deltahat_se}: standard error for overall treatment effect estimate.
+   \item \code{delta_diff}: difference between the treatment effects, equal to the numerator of PTE.
+   \item \code{dd_se}: standard error for \code{delta_diff}
+   }
+}
 \description{
-A function for ...
+A function for estimating the proportion of treatment effect explained using cross-fitting.
 }
