@@ -1,26 +1,26 @@
-#'A function for ...
+#' A function for estimating the proportion of treatment effect explained using cross-fitting.
 #'
 #'
 #'@param ds a \code{data.frame}.
-#'@param x names any other covariates (eg. age, sex, etc). Default is \code{NULL}.
-#'@param s names surrogates
-#'@param y names outcome
+#'@param x names of all covariates in \code{ds} that should be included to control for confounding (eg. age, sex, etc). Default is \code{NULL}.
+#'@param s names of surrogates in \code{ds}.
+#'@param y name of the outcome in \code{ds}.
 #'@param a treatment variable name (eg. groups). Expect a binary variable made of \code{1}s and \code{0}s.
-#'@param K number of folds for cross validation. Default is \code{5}
-#'@param outcome_learners Default is \code{NULL}
-#'@param ps_learners only used for the superlearner
-#'@param interaction_model logical indicating wether an interaction model should be considered.
-#'Default is \code{TRUE}
-#'@param trim_at Default is \code{0.05}
-#'@param outcome_family Default is \code{'gaussian'}. Other choice is \code{'binomial'} for binary outcome.
-#'@param mthd Regression method. Default is \code{'superlearner'}, other choice
-#'is \code{'lasso'}.
-#'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
+#'@param K number of folds for cross-fitting. Default is \code{5}.
+#'@param outcome_learners string vector indicating learners to be used for estimation of the outcome function (e.g., \code{"SL.ridge"}). See the SuperLearner package for details.
+#'@param ps_learners string vector indicating learners to be used for estimation of the propensity score function (e.g., \code{"SL.ridge"}). See the SuperLearner package for details.
+#'@param interaction_model logical indicating whether outcome functions for treated and control should be estimated separately. Default is \code{TRUE}.
+#'@param trim_at threshold at which to trim propensity scores. Default is \code{0.05}.
+#'@param outcome_family default is \code{'gaussian'} for continuous outcomes. Other choice is \code{'binomial'} for binary outcomes.
+#'@param mthd selected regression method. Default is \code{'superlearner'}, which uses the \code{SuperLearner} package for estimation. Other choices include \code{'lasso'} (which uses \code{glmnet}), \code{'sis'} (which uses \code{SIS}), \code{'cal'} (which uses \code{RCAL}).
+#'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotic standard errors are used.
 #'@param ncores number of cpus used for parallel computations. Default is \code{parallel::detectCores()-1}
 #'@param ... additional parameters (in particular for super_learner)
 #'
 #'@importFrom purrr map
 #'@importFrom stats gaussian quantile rnorm rbeta sd
+#'@importFrom tibble tibble
+#'@importFrom dplyr pull mutate
 #'
 #'@export
 xf_surrogate <- function(ds,
