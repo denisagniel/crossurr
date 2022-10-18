@@ -11,7 +11,7 @@ xfr_surrogate(
   y,
   a,
   epsilon = NULL,
-  max_splits = 50,
+  splits = 50,
   K = 5,
   outcome_learners = NULL,
   ps_learners = NULL,
@@ -20,7 +20,6 @@ xfr_surrogate(
   outcome_family = gaussian(),
   mthd = "superlearner",
   n_ptb = 0,
-  verbose = FALSE,
   ...
 )
 }
@@ -37,7 +36,7 @@ xfr_surrogate(
 
 \item{epsilon}{tuning parameter to control the accuracy of iterative estimation of confidence intervals.}
 
-\item{max_splits}{maximum number of data splits to perform when computing confidence intervals.}
+\item{splits}{number of data splits to perform when computing confidence intervals.}
 
 \item{K}{number of folds for cross validation. Default is \code{5}}
 

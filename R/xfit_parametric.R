@@ -24,7 +24,7 @@ xfit_lm <- function(ds,
     # browser()
     print(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
-      filter(fold != i)
+      filter(!!sym("fold") != i)
     if (case_only) {
       train_ds <- train_ds %>%
         filter(!!an == 1)
@@ -33,7 +33,7 @@ xfit_lm <- function(ds,
         filter(!!an == 0)
     }
     test_ds <- dsf %>%
-      filter(fold == i)
+      filter(!!sym("fold") == i)
 
     pf <- parametric_fold(xvars = xvars,
                      yname = yn,

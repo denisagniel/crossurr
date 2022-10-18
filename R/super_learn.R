@@ -10,6 +10,7 @@ super_learn <- function(x = NULL,
                         ps_fit = FALSE,
                         newX0 = NULL,
                         newX1 = NULL,
+                        newX = NULL,
                         ...) {
   # if (!inherits(yname, 'quosure')) {
   #   yn <- enquo(yname)

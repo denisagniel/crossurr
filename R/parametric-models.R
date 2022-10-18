@@ -1,3 +1,8 @@
+#'Ordinary Least Squares
+#'
+#'@keywords internal
+#'@importFrom glue glue
+#'@importFrom stats lm as.formula binomial predict glm
 ols <- function(x = NULL,
                   y = NULL,
                   data = NULL,

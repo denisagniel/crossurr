@@ -16,9 +16,11 @@
 #'@param mthd Regression method. Default is \code{'superlearner'}, other choice
 #'is \code{'lasso'}.
 #'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotics
+#'@param ncores number of cpus used for parallel computations. Default is \code{parallel::detectCores()-1}
 #'@param ... additional parameters (in particular for super_learner)
 #'
 #'@importFrom purrr map
+#'@importFrom stats gaussian quantile rnorm rbeta sd
 #'
 #'@export
 xf_surrogate <- function(ds,
@@ -92,7 +94,7 @@ xf_surrogate <- function(ds,
     n0 <- sum( 1 - ds %>% pull(!!sym(a)))
     u1 <- ds %>%
       mutate(u_i = n/n1*!!sym(a)*!!sym(y) - n/n0*(1-!!sym(a))*!!sym(y)) %>%
-      pull(u_i)
+      pull(!!sym("u_i"))
     deltahat <- mean(u1)
   } else {
     delta_s_fit <- xfit_dr(ds = ds,
@@ -127,8 +129,8 @@ xf_surrogate <- function(ds,
   deltahat_s <- delta_s_fit$estimate
 
   w_o <- delta_s_fit$observation_data[[1]] %>%
-    mutate(theta = 1*(pi1 > trim_at & pi0 > trim_at)) %>%
-    pull(theta)
+    mutate(theta = 1*(!!sym("pi1") > trim_at & !!sym("pi0") > trim_at)) %>%
+    pull(!!sym("theta"))
   deltahat_s_o <- mean(w_o*u2)
 
   if (n_ptb > 0) {
@@ -146,9 +148,9 @@ xf_surrogate <- function(ds,
     }) %>%
       bind_rows()
     ptb_out <- ptb_ds %>%
-      summarise(R_qci_l = quantile(R_g, 0.025),
-                R_qci_h = quantile(R_g, 0.975),
-                R_ptb_se = sd(R_g)) %>%
+      summarise(R_qci_l = quantile(!!sym("R_g"), 0.025),
+                R_qci_h = quantile(!!sym("R_g"), 0.975),
+                R_ptb_se = sd(!!sym("R_g"))) %>%
       mutate(ptb_ds = list(ptb_ds))
   }
 

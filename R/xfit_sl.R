@@ -30,7 +30,7 @@ xfit_sl <- function(ds,
     # browser()
     print(glue('Fitting fold {i}...'))
     train_ds <- dsf %>%
-      filter(fold != i)
+      filter(!!sym("fold") != i)
     if (case_only) {
       train_ds <- train_ds %>%
         filter(!!an == 1)
@@ -39,7 +39,7 @@ xfit_sl <- function(ds,
         filter(!!an == 0)
     }
     test_ds <- dsf %>%
-      filter(fold == i)
+      filter(!!sym("fold") == i)
 
     slf <- superlearn_fold(xvars = xvars,
                            yname = yn,
