@@ -9,7 +9,7 @@
 The main functions of this package are \code{xf_surrogate} and \code{xfr_surrogate}
 }
 \author{
-\strong{Maintainer}: Denis Agniel \email{denis.agniel@gmail.com}
+\strong{Maintainer}: Denis Agniel \email{dagniel@rand.org}
 
 Authors:
 \itemize{

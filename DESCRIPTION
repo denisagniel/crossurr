@@ -3,7 +3,7 @@ Type: Package
 Title: Cross-fitting for doubly robust evaluation of high-dimensional surrogate markers 
 Version: 0.9.9999
 Authors@R: c(person("Denis", "Agniel", role = c("aut", "cre"),
-                    email = "denis.agniel@gmail.com"),
+                    email = "dagniel@rand.org"),
 	           person("Boris P.", "Hejblum", role = c("aut"),
 	                  email = "boris.hejblum@u-bordeaux.fr")
 	         )
@@ -23,6 +23,7 @@ Imports: dplyr,
   rlang,
   SIS,
   stats,
-  SuperLearner
+  SuperLearner,
+  tibble
 Encoding: UTF-8
 RoxygenNote: 7.2.1
