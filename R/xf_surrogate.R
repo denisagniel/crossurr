@@ -17,6 +17,22 @@
 #'@param ncores number of cpus used for parallel computations. Default is \code{parallel::detectCores()-1}
 #'@param ... additional parameters (in particular for super_learner)
 #'
+#' @return a \code{tibble} with columns: \itemize{
+#'    \item \code{R}: estimate of the proportion of treatment effect explained, equal to 1 - \code{deltahat_s}/\code{deltahat}.
+#'    \item \code{R_se} standard error for the PTE.
+#'    \item \code{deltahat_s}: residual treatment effect estimate.
+#'    \item \code{deltahat_s_se}: standard error for the residual treatment effect.
+#'    \item \code{pi_o}: estimate of the proportion of overlap.
+#'    \item \code{R_o}: PTE only in the overlap region.
+#'    \item \code{R_o_se}: the standard error for \code{R_o}.
+#'    \item \code{deltahat_s_o}: residual treatment effect in overlap region,
+#'    \item \code{deltahat_s_se_o}: standard error for \code{deltahat_s_o}.
+#'    \item \code{deltahat}: overall treatment effect estimate.
+#'    \item \code{deltahat_se}: standard error for overall treatment effect estimate.
+#'    \item \code{delta_diff}: difference between the treatment effects, equal to the numerator of PTE.
+#'    \item \code{dd_se}: standard error for \code{delta_diff}
+#'    }
+#'
 #'@importFrom purrr map
 #'@importFrom stats gaussian quantile rnorm rbeta sd
 #'@importFrom tibble tibble
