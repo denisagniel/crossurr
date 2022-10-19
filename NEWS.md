@@ -1,3 +1,3 @@
-# crossurr 1.0.0
+# crossurr 1.0.1
 
 * Initial release of `crossurr`
