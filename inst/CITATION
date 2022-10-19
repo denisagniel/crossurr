@@ -1,0 +1,14 @@
+citHeader("To cite crossurr in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "Doubly robust evaluation of high-dimensional surrogate markers",
+  author   = "Agniel D, Hejblum BP, Thiebaut R, and Parast L",
+  journal  = "Biostatistics",
+  year     = "2022",
+  volume   = "in press",
+  number   = "",
+  pages    = "kxac020",
+  url      = "https://doi.org/10.1093/biostatistics/kxac020",
+  textVersion = paste("Agniel D, Hejblum BP, Thiebaut R and Parast L (2022). Doubly robust evaluation of high-dimensional surrogate markers, Biostatistics, kxac020.")
+)
