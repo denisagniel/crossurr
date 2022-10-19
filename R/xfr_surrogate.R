@@ -94,7 +94,6 @@
 #'@importFrom purrr map map_df
 #'@importFrom stats median gaussian
 #'@importFrom tidyr spread
-#'@importFrom mvnfast rmvn
 #'
 #'@export
 xfr_surrogate <- function(ds,
