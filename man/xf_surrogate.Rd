@@ -73,3 +73,81 @@ a \code{tibble} with columns: \itemize{
 \description{
 A function for estimating the proportion of treatment effect explained using cross-fitting.
 }
+\examples{
+
+library(SuperLearner)
+library(crossurr)
+library(dplyr)
+library(mvnfast)
+library(glue)
+library(tidyr)
+Delta <- 2.25
+Delta_s <- Delta*0.5
+
+n <- 300
+Delta <- 2.25
+Delta_s <- Delta*0.5
+q <- 2
+p <- 50
+sig <- 1/sqrt(p)
+sig_s<- 3
+Sigma <- matrix(0.2, p, p) + (1-0.2)*diag(p)
+
+x1 <- runif(n, -2, 5)
+x2 <- rbinom(n, prob = 0.5, size = 1)
+x <- cbind(x1, x2)
+a <- rbinom(n, prob = plogis(-x1 + 2*x1*x2), size = 1)
+s_spm <- matrix(rep(1:0, c(10, p - 10)), n, p, byrow = TRUE)
+s_1 <-  1.5 + (x1 + x2)*s_spm + rmvn(n, mu = rep(0, p), sigma = Sigma)*sig_s
+s_0 <- 2 + x2*s_spm - x1*x2 + rmvn(n, mu = rep(0, p), sigma = Sigma)*sig_s
+s <- s_1*a + (1-a)*s_0
+y_1 <- Delta_s + x[,1] + x[,2] + rowMeans(s_1[,1:15]) + rnorm(n, sd = sig)
+y_0 <- x[,1] + x[,2] + rowMeans(s_0[,1:15]) + rnorm(n, sd = sig)
+y <- y_1*a + (1-a)*y_0
+dsi <- tibble(
+ id = 1:n,
+ a, y
+)
+sds <- tibble(
+ id = rep(1:n, p),
+ s = c(s),
+ sn = glue('s.{rep(1:p, each = n)}')
+)
+xds <- tibble(
+ id = rep(1:n, 2),
+ x = c(x),
+ xn = glue('x.{rep(1:2, each = n)}')
+) \%>\%
+ spread(xn, x)
+
+ds <- dsi \%>\%
+ inner_join(sds)
+wds <- ds \%>\%
+ spread(sn, s) \%>\%
+ inner_join(xds)
+
+sl_est <- xf_surrogate(ds = wds,
+x = paste('x.', 1:q, sep =''),
+s = paste('s.', 1:p, sep =''),
+a = 'a',
+y = 'y',
+K = 4,
+trim_at = 0.01,
+mthd = 'superlearner',
+outcome_learners = c("SL.mean","SL.lm", "SL.svm", "SL.ridge"),
+ps_learners = c("SL.mean", "SL.glm", "SL.svm", "SL.lda"),
+ncores = 1)
+
+lasso_est <- xf_surrogate(ds = wds,
+x = paste('x.', 1:q, sep =''),
+s = paste('s.', 1:p, sep =''),
+a = 'a',
+y = 'y',
+K = 4,
+trim_at = 0.01,
+mthd = 'lasso',
+ncores = 1)
+
+
+
+}
