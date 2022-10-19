@@ -73,15 +73,15 @@ xfr_surrogate <- function(ds,
   this_res %>%
          summarise(
              Rm = median(!!sym("R")),
-             R_se0 = sqrt(median(!!sym("R_se")^2 + (!!sym("R") - median(!!sym("R")))^2)),
+             R_se0 = sqrt(median((!!sym("R_se"))^2 + (!!sym("R") - median(!!sym("R")))^2)),
              R_cil0 = !!sym("Rm") - 1.96*!!sym("R_se0"),
              R_cih0 = !!sym("Rm") + 1.96*!!sym("R_se0"),
              Dm = median(!!sym("deltahat")),
-             D_se0 = sqrt(median(!!sym("deltahat_se")^2 + (!!sym("deltahat") - median(!!sym("deltahat")))^2)),
+             D_se0 = sqrt(median((!!sym("deltahat_se"))^2 + (!!sym("deltahat") - median(!!sym("deltahat")))^2)),
              D_cil0 = !!sym("Dm") - 1.96*!!sym("D_se0"),
              D_cih0 = !!sym("Dm") + 1.96*!!sym("D_se0"),
              Dsm = median(!!sym("deltahat_s")),
-             Ds_se0 = sqrt(median(!!sym("deltahat_s_se")^2 + (!!sym("deltahat_s") - median(!!sym("deltahat_s")))^2)),
+             Ds_se0 = sqrt(median((!!sym("deltahat_s_se"))^2 + (!!sym("deltahat_s") - median(!!sym("deltahat_s")))^2)),
              Ds_cil0 = !!sym("Dsm") - 1.96*!!sym("Ds_se0"),
              Ds_cih0 = !!sym("Dsm") + 1.96*!!sym("Ds_se0"),
            )
