@@ -22,6 +22,7 @@ fold_fit <- function(
         newX1 = NULL,
         newX = test_x,
         ps_fit = ps_fit,
+        learners = learners,
         ...)
     } else if (mthd == 'lasso') {
       test_x <- test_data %>%
