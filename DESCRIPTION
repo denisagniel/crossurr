@@ -1,6 +1,6 @@
 Package: crossurr
 Type: Package
-Title: Cross-fitting for doubly robust evaluation of high-dimensional surrogate markers 
+Title: Cross-fitting for Doubly Robust Evaluation of High-Dimensional Surrogate Markers 
 Version: 1.0.0
 Authors@R: c(person("Denis", "Agniel", role = c("aut", "cre"),
                     email = "dagniel@rand.org"),
