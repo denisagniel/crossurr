@@ -108,6 +108,8 @@
 #'@importFrom stats gaussian quantile rnorm rbeta sd
 #'@importFrom tibble tibble
 #'@importFrom dplyr pull mutate
+#'@importFrom tidyr spread
+#'@importFrom mvnfast rmvn
 #'
 #'@export
 xf_surrogate <- function(ds,
