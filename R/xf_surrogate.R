@@ -35,12 +35,6 @@
 #'
 #'@examples
 #'
-#' library(SuperLearner)
-#' library(crossurr)
-#' library(dplyr)
-#' library(mvnfast)
-#' library(glue)
-#' library(tidyr)
 #' Delta <- 2.25
 #' Delta_s <- Delta*0.5
 #'
@@ -58,7 +52,7 @@
 #' x <- cbind(x1, x2)
 #' a <- rbinom(n, prob = plogis(-x1 + 2*x1*x2), size = 1)
 #' s_spm <- matrix(rep(1:0, c(10, p - 10)), n, p, byrow = TRUE)
-#' s_1 <-  1.5 + (x1 + x2)*s_spm + rmvn(n, mu = rep(0, p), sigma = Sigma)*sig_s
+#' s_1 <-  1.5 + (x1 + x2)*s_spm + mvnfast::rmvn(n, mu = rep(0, p), sigma = Sigma)*sig_s
 #' s_0 <- 2 + x2*s_spm - x1*x2 + rmvn(n, mu = rep(0, p), sigma = Sigma)*sig_s
 #' s <- s_1*a + (1-a)*s_0
 #' y_1 <- Delta_s + x[,1] + x[,2] + rowMeans(s_1[,1:15]) + rnorm(n, sd = sig)
@@ -78,12 +72,12 @@
 #'  x = c(x),
 #'  xn = glue('x.{rep(1:2, each = n)}')
 #') %>%
-#'  spread(xn, x)
+#'  tidyr::spread(xn, x)
 #'
 #'ds <- dsi %>%
 #'  inner_join(sds)
 #'wds <- ds %>%
-#'  spread(sn, s) %>%
+#'  tidyr::spread(sn, s) %>%
 #'  inner_join(xds)
 #'
 #' sl_est <- xf_surrogate(ds = wds,
