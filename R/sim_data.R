@@ -3,6 +3,8 @@
 #'@param n number of simulated observations
 #'@param p number of simulated variables
 #'
+#'@return toy dataset used for demonstrating the methods with outcome \code{y}, treatment \code{a}, covariates \code{x.1, x.2}, and surrogates \code{s.1, s.2, ...}
+#'
 #'@importFrom stats gaussian quantile rnorm rbeta sd runif rbinom plogis
 #'@importFrom tibble tibble
 #'@importFrom dplyr pull mutate

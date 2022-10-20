@@ -11,6 +11,9 @@ sim_data(n, p)
 
 \item{p}{number of simulated variables}
 }
+\value{
+toy dataset used for demonstrating the methods with outcome \code{y}, treatment \code{a}, covariates \code{x.1, x.2}, and surrogates \code{s.1, s.2, ...}
+}
 \description{
 A simple function to simulate example data.
 }
