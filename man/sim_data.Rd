@@ -4,7 +4,12 @@
 \alias{sim_data}
 \title{A simple function to simulate example data.}
 \usage{
-sim_data(n, p, q)
+sim_data(n, p)
+}
+\arguments{
+\item{n}{number of simulated observations}
+
+\item{p}{number of simulated variables}
 }
 \description{
 A simple function to simulate example data.

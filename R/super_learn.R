@@ -1,3 +1,6 @@
+#'@import SuperLearner
+#'@keywords internal
+
 super_learn <- function(x = NULL,
                         y = NULL,
                         data = NULL,
@@ -26,7 +29,7 @@ super_learn <- function(x = NULL,
     sl <- SuperLearner::SuperLearner(Y = y,
                                      X = x,
                                      SL.library = learners,
-                                     family = binomial,
+                                     family = binomial(),
                                      newX = newX,
                                      ...)
     sl$yhat <- sl$SL.predict
