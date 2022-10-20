@@ -78,30 +78,31 @@ A function for estimating the proportion of treatment effect explained using cro
 n <- 300
 p <- 50
 q <- 2
-wds <- sim_data(n = n, p = p, q = q)
+wds <- sim_data(n = n, p = p)
 
-sl_est <- xf_surrogate(ds = wds,
-x = paste('x.', 1:q, sep =''),
-s = paste('s.', 1:p, sep =''),
-a = 'a',
-y = 'y',
-K = 4,
-trim_at = 0.01,
-mthd = 'superlearner',
-outcome_learners = c("SL.mean","SL.lm", "SL.svm", "SL.ridge"),
-ps_learners = c("SL.mean", "SL.glm", "SL.svm", "SL.lda"),
-ncores = 1)
+if(interactive()){
+ sl_est <- xf_surrogate(ds = wds,
+   x = paste('x.', 1:q, sep =''),
+   s = paste('s.', 1:p, sep =''),
+   a = 'a',
+   y = 'y',
+   K = 4,
+   trim_at = 0.01,
+   mthd = 'superlearner',
+   outcome_learners = c("SL.mean","SL.lm", "SL.svm", "SL.ridge"),
+   ps_learners = c("SL.mean", "SL.glm", "SL.svm", "SL.lda"),
+   ncores = 1)
 
-lasso_est <- xf_surrogate(ds = wds,
-x = paste('x.', 1:q, sep =''),
-s = paste('s.', 1:p, sep =''),
-a = 'a',
-y = 'y',
-K = 4,
-trim_at = 0.01,
-mthd = 'lasso',
-ncores = 1)
-
+ lasso_est <- xf_surrogate(ds = wds,
+   x = paste('x.', 1:q, sep =''),
+   s = paste('s.', 1:p, sep =''),
+   a = 'a',
+   y = 'y',
+   K = 4,
+   trim_at = 0.01,
+   mthd = 'lasso',
+   ncores = 1)
+}
 
 
 }

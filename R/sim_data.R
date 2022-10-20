@@ -1,13 +1,16 @@
 #' A simple function to simulate example data.
 #'
+#'@param n number of simulated observations
+#'@param p number of simulated variables
 #'
-#'
-#'@importFrom stats gaussian quantile rnorm rbeta sd
+#'@importFrom stats gaussian quantile rnorm rbeta sd runif rbinom plogis
 #'@importFrom tibble tibble
 #'@importFrom dplyr pull mutate
 #'@importFrom tidyr spread
 #'
-sim_data <- function(n, p, q) {
+#'@export
+#'
+sim_data <- function(n, p) {
    Delta <- 2.25
    Delta_s <- Delta*0.5
 
@@ -42,13 +45,13 @@ sim_data <- function(n, p, q) {
     x = c(x),
     xn = glue('x.{rep(1:2, each = n)}')
   ) %>%
-    tidyr::spread(xn, x)
+    tidyr::spread(!!sym("xn"), x)
 
   ds <- dsi %>%
-    inner_join(sds)
+    inner_join(sds, by="id")
   wds <- ds %>%
-    tidyr::spread(sn, s) %>%
-    inner_join(xds)
+    tidyr::spread(!!sym("sn"), s) %>%
+    inner_join(xds, by="id")
 
   wds
 }

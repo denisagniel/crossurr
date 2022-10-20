@@ -37,22 +37,23 @@
 #' n <- 100
 #' p <- 20
 #' q <- 2
-#' wds <- sim_data(n = n, p = p, q = q)
+#' wds <- sim_data(n = n, p = p)
 #'
-#' lasso_est <- xfr_surrogate(ds = wds,
-#' x = paste('x.', 1:q, sep =''),
-#' s = paste('s.', 1:p, sep =''),
-#' a = 'a',
-#' y = 'y',
-#' splits = 2,
-#' K = 2,
-#' trim_at = 0.01,
-#' mthd = 'lasso',
-#' ncores = 1)
+#'if(interactive()){
+#'  lasso_est <- xfr_surrogate(ds = wds,
+#'    x = paste('x.', 1:q, sep =''),
+#'    s = paste('s.', 1:p, sep =''),
+#'    a = 'a',
+#'    y = 'y',
+#'    splits = 2,
+#'    K = 2,
+#'    trim_at = 0.01,
+#'    mthd = 'lasso',
+#'    ncores = 1)
+#' }
 #'
 #'@importFrom purrr map map_df
 #'@importFrom stats median gaussian
-#'@importFrom tidyr spread
 #'
 #'@export
 xfr_surrogate <- function(ds,
