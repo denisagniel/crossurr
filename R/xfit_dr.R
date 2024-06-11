@@ -15,12 +15,14 @@ xfit_dr <- function(ds,
                     mthd = 'superlearner',
                     ncores = parallel::detectCores()-1,
                     ...) {
+
   if(mthd == 'parametric') {
     out_mthd <- 'ols'
     ps_mthd <- 'logistic'
   } else {
     out_mthd <- ps_mthd <- mthd
   }
+
   if (mthd == 'cal') {
     cal_fit <- RCAL::ate.regu.cv(fold = c(K, K),
                                  nrho = c(11, 11),
@@ -96,18 +98,26 @@ xfit_dr <- function(ds,
         mutate(pi1 = pi,
                pi0 = 1 - !!sym("pi1"))
     }
-    # browser()
     if (!interaction_model) {
-      out_ds <- mu %>%
-        inner_join(ps, by = colnames(ds))
+      out_ds <- cbind.data.frame(ds,
+                                 mu0 = mu$mu0,
+                                 mu1 = mu$mu1,
+                                 pi = ps$pi,
+                                 pi1 = ps$pi1,
+                                 pi0 = ps$pi0
+      )
     } else {
-      out_ds <- mu0 %>%
-        inner_join(mu1, by = colnames(ds)) %>%
-        inner_join(ps, by = colnames(ds))
+      out_ds <- cbind.data.frame(ds,
+                                 mu0 = mu0$mu0,
+                                 mu1 = mu1$mu1,
+                                 pi = ps$pi,
+                                 pi1 = ps$pi1,
+                                 pi0 = ps$pi0
+      )
     }
   }
 
-  #browser()
+
   out_ds <- out_ds %>%
     mutate(u_i = mu1 - mu0 +
              (!!sym(a))*((!!sym(y)) - mu1)/!!sym("pi1") -
