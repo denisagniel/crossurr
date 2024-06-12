@@ -1,7 +1,5 @@
 ## R CMD check results
-* local R installation, R 4.1.2 on macOS (12.6)
-* Linux (Ubuntu 20.04), macOS (11.7) and Windows (Server 2022 10.0), R devel and release (through GitHub Actions)
+* local R installation, R 4.4.0 on macOS (13.6)
+* Linux (Ubuntu 22.04), macOS (14.5) and Windows (Server 2022 10.0), R devel and release (through GitHub Actions)
 
-0 errors | 0 warnings | 1 note
-
-* This is a new release.
+0 error | 0 warning | 0 note
