@@ -3,3 +3,6 @@
 * Linux (Ubuntu 22.04), macOS (14.5) and Windows (Server 2022 10.0), R devel and release (through GitHub Actions)
 
 0 error | 0 warning | 0 note
+
+citEntry() has been replaced by bibentry() and version number has 
+been increased.
