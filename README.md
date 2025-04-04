@@ -11,7 +11,7 @@ doubly robust evaluation of high-dimensional surrogate markers.
 You can use these methods to determine how much of the overall treatment effect 
 is explained by a (possibly high-dimensional) set of surrogate markers.
 
-More details on the method is available in Agniel D, Hejblum BP, Thiebaut R & 
+More details on the method is available in Agniel D, Hejblum BP, Thiébaut R & 
 Parast L (2022), "Doubly robust evaluation of high-dimensional surrogate 
 markers", *Biostatistics* <doi:10.1093/biostatistics/kxac020>. 
 

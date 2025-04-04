@@ -49,7 +49,7 @@ xf_surrogate(
 
 \item{n_ptb}{Number of perturbations. Default is \code{0} which means asymptotic standard errors are used.}
 
-\item{ncores}{number of cpus used for parallel computations. Default is \code{parallel::detectCores()-1}}
+\item{ncores}{number of CPUs used for parallel computations. Default is \code{parallel::detectCores()-1}}
 
 \item{...}{additional parameters (in particular for super_learner)}
 }

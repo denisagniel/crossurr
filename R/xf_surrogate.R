@@ -14,7 +14,7 @@
 #'@param outcome_family default is \code{'gaussian'} for continuous outcomes. Other choice is \code{'binomial'} for binary outcomes.
 #'@param mthd selected regression method. Default is \code{'superlearner'}, which uses the \code{SuperLearner} package for estimation. Other choices include \code{'lasso'} (which uses \code{glmnet}), \code{'sis'} (which uses \code{SIS}), \code{'cal'} (which uses \code{RCAL}).
 #'@param n_ptb Number of perturbations. Default is \code{0} which means asymptotic standard errors are used.
-#'@param ncores number of cpus used for parallel computations. Default is \code{parallel::detectCores()-1}
+#'@param ncores number of CPUs used for parallel computations. Default is \code{parallel::detectCores()-1}
 #'@param ... additional parameters (in particular for super_learner)
 #'
 #' @return a \code{tibble} with columns: \itemize{
