@@ -1,11 +1,13 @@
 Package: crossurr
 Type: Package
 Title: Cross-Fitting for Doubly Robust Evaluation of High-Dimensional Surrogate Markers 
-Version: 1.1.1
+Version: 1.1.2
 Authors@R: c(person("Denis", "Agniel", role = c("aut", "cre"),
                     email = "dagniel@rand.org"),
 	           person("Boris P.", "Hejblum", role = c("aut"),
-	                  email = "boris.hejblum@u-bordeaux.fr")
+	                  email = "boris.hejblum@u-bordeaux.fr"),
+	           person("Layla", "Parast", role = c("aut"),
+	                  email = "layla.parast@parast@austin.utexas.edu")
 	         )
 Description: Doubly robust methods for evaluating surrogate markers as outlined in: Agniel D, Hejblum BP, Thiebaut R & Parast L (2022). 
              "Doubly robust evaluation of high-dimensional surrogate markers", Biostatistics <doi:10.1093/biostatistics/kxac020>. You can use these methods to determine how much of the overall treatment effect is explained by a (possibly high-dimensional) set of surrogate markers.
