@@ -14,6 +14,7 @@ The main functions of this package are \code{xf_surrogate} and \code{xfr_surroga
 Authors:
 \itemize{
   \item Boris P. Hejblum \email{boris.hejblum@u-bordeaux.fr}
+  \item Layla Parast \email{layla.parast@parast@austin.utexas.edu}
 }
 
 }
