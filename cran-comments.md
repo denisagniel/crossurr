@@ -1,8 +1,9 @@
 ## R CMD check results
-* local R installation, R 4.4.0 on macOS (13.6)
-* Linux (Ubuntu 22.04), macOS (14.5) and Windows (Server 2022 10.0), R devel and release (through GitHub Actions)
+ * local R installation, R 4.4.3
+ * Linux (Ubuntu 24.04), macOS (14.7) and Windows (Server 2022 10.0), R devel and release (through GitHub Actions)
+ * win-builder
+ * rhub v2 on (including fedora40 with gcc14 and clang)
 
-0 error | 0 warning | 0 note
+0 error | 0 warning | 1 note ("unable to verify current time")
 
-citEntry() has been replaced by bibentry() and version number has 
-been increased.
+Logo has been added and version number has been increased.
