@@ -3,14 +3,13 @@ citHeader("To cite crossurr in publications please use:")
 bibentry(
   bibtype  = "Article",
   title    = "Doubly robust evaluation of high-dimensional surrogate markers",
-  author   = "Agniel D, Hejblum BP, Thiebaut R, and Parast L",
+  author   = "Denis Agniel and Boris P Hejblum and Rodolphe Thi\\'{e}baut and Layla Parast",
   journal  = "Biostatistics",
   year     = "2023",
   volume   = "24",
   number   = "4",
   pages    = "985--999",
-  url      = "https://doi.org/10.1093/biostatistics/kxac020",
   doi      = "10.1093/biostatistics/kxac020",
   pmcid    = "PMC10801117",
-  textVersion = paste("Agniel D, Hejblum BP, Thiebaut R and Parast L (2023). Doubly robust evaluation of high-dimensional surrogate markers, Biostatistics, 24(4):985-999.")
+  note     = "R package version 1.1.3"
 )
